@@ -1,0 +1,37 @@
+[project]
+name = "basa"
+version = "0.1.0-alpha"
+description = "Modern NLP for Indonesian and regional languages"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "Muanai Khalifah Revindo", email = "muanaikhalifahr@gmail.com"}
+]
+dependencies = [
+    "transformers>=4.30.0",
+    "torch>=2.0.0",
+    "pydantic>=2.0.0"
+]
+
+[project.optional-dependencies]
+serving = [
+    "fastapi>=0.100.0",
+    "uvicorn>=0.23.0"
+]
+evaluation = [
+    "rouge-score>=0.1.2",
+    "bert-score>=0.3.13",
+    "seqeval>=1.2.2"
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
