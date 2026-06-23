@@ -15,11 +15,11 @@ Quick start:
 from .core.normalize import normalize
 from .core.quick import quick
 from .core.typo import typo
-from .core.slang import slang as slang_engine
+from .core.slang import slang
 
 __all__ = [
     "normalize",
     "quick",
     "typo",
-    "slang_engine",
+    "slang",
 ]
