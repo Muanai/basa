@@ -372,8 +372,7 @@ class TypoCorrector:
             if dist <= max_dist:
                 candidates.append((dist, candidate))
 
-        # Urutkan berdasarkan jarak terkecil, lalu ambil top_k
-        candidates.sort(key=lambda x: x[0])
+        candidates.sort(key=lambda x: (x[0], x[1]))
         return [c[1] for c in candidates[:top_k]]
 
     # ─── Diagnostics ─────────────────────────────────────────────────────────
