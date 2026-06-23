@@ -77,6 +77,25 @@ _PRONOUNS: Dict[str, str] = {
     "kln":  "kalian",
 }
 
+# Kinship & address terms
+_KINSHIP: Dict[str, str] = {
+    "kk":    "kakak",
+    "kak":   "kakak",
+    "adk":   "adik",
+    "adk":   "adik",
+    "bpk":   "bapak",
+    "ayh":   "ayah",
+    "ibu":   "ibu",           # already standard, included for completeness
+    "klg":   "keluarga",
+    "klrg":  "keluarga",
+    "kel":   "keluarga",
+    "ortu":  "orang tua",
+    "ortuku": "orang tuaku",
+    "suami": "suami",         # already standard
+    "istri": "istri",         # already standard
+    "anak":  "anak",          # already standard
+}
+
 # Standalone negation words
 _NEGATION: Dict[str, str] = {
     "g":      "tidak",
@@ -381,6 +400,7 @@ _YOUTH_SLANG: Dict[str, str] = {
 _DEFAULT_SLANG: Dict[str, str] = {}
 for _cat in (
     _PRONOUNS,
+    _KINSHIP,
     _NEGATION,
     _COMPOUND_NEGATION,
     _CONJUNCTIONS,
