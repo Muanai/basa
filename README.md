@@ -231,7 +231,7 @@ slang.normalize_batch(["gw makan", "lu minum"])
 
 #### Slang dictionary categories
 
-The built-in dictionary covers **1,600+ entries** across 27 categories:
+The built-in dictionary covers **1,200+ entries** across 27 categories:
 
 | Category | Count | Examples |
 |---|---|---|
