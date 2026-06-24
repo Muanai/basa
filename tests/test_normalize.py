@@ -166,16 +166,17 @@ class TestWhitespace:
 
 class TestTypoCorrection:
     def test_typo_disabled_by_default(self):
-        # Even without a vocab, the default apply_typo=False must not cause an error
-        assert normalize("saya mkan") == "saya mkan"
+        # Even without a vocab, the default apply_typo=False must not cause an error.
+        # Use "pegi" (a typo of "pergi") — not a slang abbreviation, no repeated chars.
+        assert normalize("saya pegi") == "saya pegi"
 
     def test_typo_opt_in_corrects_word(self):
-        typo.add_to_vocab({"makan", "minum"})
-        assert normalize("saya mkan", apply_typo=True) == "saya makan"
+        typo.add_to_vocab({"pergi", "minum"})
+        assert normalize("saya pegi", apply_typo=True) == "saya pergi"
 
     def test_typo_safeguard_empty_vocab(self):
         # apply_typo=True with empty vocab → no error, does not modify text
-        assert normalize("saya mkan", apply_typo=True) == "saya mkan"
+        assert normalize("saya pegi", apply_typo=True) == "saya pegi"
 
     def test_typo_does_not_corrupt_in_vocab_word(self):
         typo.add_to_vocab({"makan", "minum"})
@@ -184,10 +185,10 @@ class TestTypoCorrection:
 
     def test_typo_runs_after_slang(self):
         # Slang first: "gw" → "saya", then typo correction
-        # "mkan" is in the vocab, should be corrected
-        typo.add_to_vocab({"makan", "saya"})
-        result = normalize("gw mkan", apply_typo=True)
-        assert result == "saya makan"
+        # "pegi" is a genuine typo of "pergi", not in slang dict
+        typo.add_to_vocab({"pergi", "saya"})
+        result = normalize("gw pegi", apply_typo=True)
+        assert result == "saya pergi"
 
 
 # ─────────────────────────────────────────────────────────────────────────────

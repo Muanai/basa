@@ -231,23 +231,70 @@ slang.normalize_batch(["gw makan", "lu minum"])
 
 #### Slang dictionary categories
 
-The built-in dictionary covers **250+ entries** across 13 categories:
+The built-in dictionary covers **1,600+ entries** across 27 categories:
 
-| Category | Examples |
-|---|---|
-| Pronouns | `gw` → saya, `lu` → kamu, `dy` → dia |
-| Kinship & address | `kk` → kakak, `klg` → keluarga, `ortu` → orang tua |
-| Negation | `ga`, `gak`, `nggak` → tidak |
-| Compound negation | `gamau` → tidak mau, `gabisa` → tidak bisa |
-| Conjunctions | `yg` → yang, `krn` → karena, `tp` → tapi |
-| Verbs | `udah` → sudah, `blm` → belum, `ngerti` → mengerti |
-| Adjectives & adverbs | `bgt` → banget, `bener` → benar, `dikit` → sedikit |
-| Question words | `gmn` → bagaimana, `knp` → kenapa, `kmn` → kemana |
-| Greetings & responses | `makasih` → terima kasih, `sip` → baik |
-| Temporal & location | `skrg` → sekarang, `kmrn` → kemarin, `ntr` → nanti |
-| Internet slang | `otw` → dalam perjalanan, `btw` → omong-omong, `wkwk` → tertawa |
-| E-commerce & finance | `ongkir` → ongkos kirim, `rekber` → rekening bersama, `cod` → bayar di tempat |
-| Youth / Gen-Z | `mager` → malas bergerak, `baper` → bawa perasaan, `gabut` → tidak ada kegiatan |
+| Category | Count | Examples |
+|---|---|---|
+| Pronouns | ~40 | `gw` → saya, `lu` → kamu, `doi` → dia, `ane` → saya, `sampeyan` → kamu |
+| Kinship & address | ~23 | `kk` → kakak, `ortu` → orang tua, `bokap` → ayah, `nyokap` → ibu |
+| Negation | ~25 | `ga`, `gak`, `nggak`, `kagak`, `jangan`, `belom` → tidak/belum/jangan |
+| Compound negation | ~30 | `gamau` → tidak mau, `gabisa` → tidak bisa, `gatau` → tidak tahu |
+| Conjunctions | ~51 | `yg` → yang, `krn` → karena, `stlh` → setelah, `sblm` → sebelum |
+| Verbs | ~100 | `udah` → sudah, `ngerti` → mengerti, `nyari` → mencari, `ngobrol` → mengobrol |
+| Adjectives & adverbs | ~109 | `bgt` → banget, `lmyn` → lumayan, `pdhl` → padahal, `kyknya` → sepertinya |
+| Question words | ~16 | `gmn` → bagaimana, `knp` → kenapa, `kumaha` → bagaimana (Sunda) |
+| Greetings & responses | ~80 | `makasih`, `tq`, `sori`, `yoi`, `bye`, `tengkyu` → terima kasih/maaf/dll |
+| Temporal & location | ~24 | `skrg` → sekarang, `kmrn` → kemarin, `mgg` → minggu, `wktu` → waktu |
+| Internet slang | ~50 | `otw` → dalam perjalanan, `btw` → omong-omong, `lowkey` → diam-diam |
+| E-commerce & finance | ~30 | `ongkir` → ongkos kirim, `cod` → bayar di tempat, `duit` → uang |
+| Youth / Gen-Z | ~26 | `mager` → malas bergerak, `baper` → bawa perasaan, `gabut` → tidak ada kegiatan |
+| Discourse markers | ~13 | `mksdnya` → maksudnya, `pokoknya`, `intinya`, `menurutku` → menurut saya |
+| Javanese extended | ~35 | `mangan` → makan, `turu` → tidur, `apik` → bagus, `okeh` → banyak |
+| Sundanese extended | ~27 | `abdi` → saya, `geus` → sudah, `tiasa` → bisa, `atuh` → dong |
+| Nouns | ~48 | `hp` → handphone, `temen` → teman, `matkul` → mata kuliah, `kantor` → kantor |
+| Health | ~80 | `dmm` → demam, `opname` → rawat inap, `gws` → lekas sembuh, `isoman` → isolasi mandiri |
+| Emotions & expressions | ~108 | `galau`, `bete`, `ghosting`, `crush`, `pdkt` → pendekatan, `mupeng` |
+| Food & drink | ~110 | `nasgor` → nasi goreng, `kopsu` → kopi susu, `laper` → lapar, `kenyang` |
+| Clothing & fashion | ~85 | `ootd` → pakaian hari ini, `thrifting` → belanja baju bekas, `hoodie` |
+| Transportation | ~75 | `ojol` → ojek online, `krl` → kereta rel listrik, `macet`, `nebeng` → menumpang |
+| Religion & culture | ~95 | `alhamdulillah`, `bismillah`, `bukber` → buka bersama, `ultah` → ulang tahun |
+| Education extended | ~91 | `bimbel` → bimbingan belajar, `ospek` → orientasi studi, `maba` → mahasiswa baru |
+| Work & office | ~124 | `wfh` → kerja dari rumah, `deadline` → batas waktu, `lembur`, `resign` |
+| Numbers & quantity | ~73 | `1rb` → seribu, `5jt` → lima juta, `rata2` → rata-rata, `tiba2` → tiba-tiba |
+| Compound expressions | ~86 | `ngapain` → sedang apa, `kapan2` → kapan-kapan, `otw ke` → dalam perjalanan ke |
+
+#### Extending the dictionary
+
+You can add domain-specific entries at any time without subclassing:
+
+```python
+from basa.core.slang import slang, SlangNormalizer
+
+# Add a single entry to the shared singleton
+slang.add("npwp", "nomor pokok wajib pajak")
+slang.lookup("npwp")   # → 'nomor pokok wajib pajak'
+slang.remove("npwp")   # → True
+len(slang)             # total entries
+
+# Add multiple entries at once (single regex recompile)
+slang.bulk_add({
+    "ktp":  "kartu tanda penduduk",
+    "sim":  "surat izin mengemudi",
+    "stnk": "surat tanda nomor kendaraan",
+})
+
+# Or create a fully isolated custom normalizer
+custom = SlangNormalizer(custom_mapping={
+    "jancok": "ekspresi",
+    "cuk":    "ekspresi",
+})
+custom.normalize("jancok, mantul tenan!")
+# → 'ekspresi, mantap betul sungguh!'
+
+# Export the full mapping for inspection or persistence
+mapping = slang.export()   # → Dict[str, str]
+slang.reset()              # restore built-in defaults
+```
 
 ---
 
@@ -343,7 +390,7 @@ pip install -e ".[dev]"         # pytest, ruff, black, mypy
 
 | Version | Status | Features |
 |---|---|---|
-| **v0.1** | ✅ Current | `normalize()`, `quick()`, slang (250+ entries), typo corrector |
+| **v0.1** | ✅ Current | `normalize()`, `quick()`, slang (1,600+ entries, 27 categories), typo corrector |
 | **v0.2** | 🔜 Planned | BK-Tree / SymSpell for faster typo correction at large vocab sizes |
 | **v0.3** | 🔜 Planned | Emoji handling, `remove_emoji` flag |
 | **v0.4** | 🔜 Planned | Tokenizer module (`basa.tokenize`) |
