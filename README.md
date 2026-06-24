@@ -235,33 +235,33 @@ The built-in dictionary covers **1,200+ entries** across 27 categories:
 
 | Category | Count | Examples |
 |---|---|---|
-| Pronouns | ~40 | `gw` → saya, `lu` → kamu, `doi` → dia, `ane` → saya, `sampeyan` → kamu |
-| Kinship & address | ~23 | `kk` → kakak, `ortu` → orang tua, `bokap` → ayah, `nyokap` → ibu |
-| Negation | ~25 | `ga`, `gak`, `nggak`, `kagak`, `jangan`, `belom` → tidak/belum/jangan |
-| Compound negation | ~30 | `gamau` → tidak mau, `gabisa` → tidak bisa, `gatau` → tidak tahu |
-| Conjunctions | ~51 | `yg` → yang, `krn` → karena, `stlh` → setelah, `sblm` → sebelum |
-| Verbs | ~100 | `udah` → sudah, `ngerti` → mengerti, `nyari` → mencari, `ngobrol` → mengobrol |
-| Adjectives & adverbs | ~109 | `bgt` → banget, `lmyn` → lumayan, `pdhl` → padahal, `kyknya` → sepertinya |
-| Question words | ~16 | `gmn` → bagaimana, `knp` → kenapa, `kumaha` → bagaimana (Sunda) |
-| Greetings & responses | ~80 | `makasih`, `tq`, `sori`, `yoi`, `bye`, `tengkyu` → terima kasih/maaf/dll |
-| Temporal & location | ~24 | `skrg` → sekarang, `kmrn` → kemarin, `mgg` → minggu, `wktu` → waktu |
-| Internet slang | ~50 | `otw` → dalam perjalanan, `btw` → omong-omong, `lowkey` → diam-diam |
-| E-commerce & finance | ~30 | `ongkir` → ongkos kirim, `cod` → bayar di tempat, `duit` → uang |
-| Youth / Gen-Z | ~26 | `mager` → malas bergerak, `baper` → bawa perasaan, `gabut` → tidak ada kegiatan |
-| Discourse markers | ~13 | `mksdnya` → maksudnya, `pokoknya`, `intinya`, `menurutku` → menurut saya |
-| Javanese extended | ~35 | `mangan` → makan, `turu` → tidur, `apik` → bagus, `okeh` → banyak |
-| Sundanese extended | ~27 | `abdi` → saya, `geus` → sudah, `tiasa` → bisa, `atuh` → dong |
-| Nouns | ~48 | `hp` → handphone, `temen` → teman, `matkul` → mata kuliah, `kantor` → kantor |
-| Health | ~80 | `dmm` → demam, `opname` → rawat inap, `gws` → lekas sembuh, `isoman` → isolasi mandiri |
-| Emotions & expressions | ~108 | `galau`, `bete`, `ghosting`, `crush`, `pdkt` → pendekatan, `mupeng` |
-| Food & drink | ~110 | `nasgor` → nasi goreng, `kopsu` → kopi susu, `laper` → lapar, `kenyang` |
-| Clothing & fashion | ~85 | `ootd` → pakaian hari ini, `thrifting` → belanja baju bekas, `hoodie` |
-| Transportation | ~75 | `ojol` → ojek online, `krl` → kereta rel listrik, `macet`, `nebeng` → menumpang |
-| Religion & culture | ~95 | `alhamdulillah`, `bismillah`, `bukber` → buka bersama, `ultah` → ulang tahun |
-| Education extended | ~91 | `bimbel` → bimbingan belajar, `ospek` → orientasi studi, `maba` → mahasiswa baru |
-| Work & office | ~124 | `wfh` → kerja dari rumah, `deadline` → batas waktu, `lembur`, `resign` |
-| Numbers & quantity | ~73 | `1rb` → seribu, `5jt` → lima juta, `rata2` → rata-rata, `tiba2` → tiba-tiba |
-| Compound expressions | ~86 | `ngapain` → sedang apa, `kapan2` → kapan-kapan, `otw ke` → dalam perjalanan ke |
+| Pronouns | 34 | `gw` → saya, `lu` → kamu, `doi` → dia, `ane` → saya, `sampeyan` → kamu |
+| Kinship & address | 19 | `kk` → kakak, `ortu` → orang tua, `bokap` → ayah, `nyokap` → ibu |
+| Negation | 22 | `ga`, `gak`, `nggak`, `kagak`, `jangan`, `belom` → tidak/belum/jangan |
+| Compound negation | 30 | `gamau` → tidak mau, `gabisa` → tidak bisa, `gatau` → tidak tahu |
+| Conjunctions | 51 | `yg` → yang, `krn` → karena, `stlh` → setelah, `sblm` → sebelum |
+| Verbs | 98 | `udah` → sudah, `ngerti` → mengerti, `nyari` → mencari, `ngobrol` → mengobrol |
+| Adjectives & adverbs | 111 | `bgt` → banget, `lmyn` → lumayan, `pdhl` → padahal, `kyknya` → sepertinya |
+| Question words | 16 | `gmn` → bagaimana, `knp` → kenapa, `kumaha` → bagaimana (Sunda) |
+| Greetings & responses | 73 | `makasih`, `tq`, `sori`, `yoi`, `bye`, `tengkyu` → terima kasih/maaf/dll |
+| Temporal & location | 26 | `skrg` → sekarang, `kmrn` → kemarin, `mgg` → minggu, `wktu` → waktu |
+| Internet slang | 50 | `otw` → dalam perjalanan, `btw` → omong-omong, `lowkey` → diam-diam |
+| E-commerce & finance | 30 | `ongkir` → ongkos kirim, `cod` → bayar di tempat, `duit` → uang |
+| Youth / Gen-Z | 24 | `mager` → malas bergerak, `baper` → bawa perasaan, `gabut` → tidak ada kegiatan |
+| Discourse markers | 11 | `mksdnya` → maksudnya, `pokoknya`, `intinya`, `menurutku` → menurut saya |
+| Javanese extended | 35 | `mangan` → makan, `turu` → tidur, `apik` → bagus, `okeh` → banyak |
+| Sundanese extended | 27 | `abdi` → saya, `geus` → sudah, `tiasa` → bisa, `atuh` → dong |
+| Nouns | 46 | `hp` → handphone, `temen` → teman, `matkul` → mata kuliah, `kantor` → kantor |
+| Health | 42 | `dmm` → demam, `opname` → rawat inap, `gws` → lekas sembuh, `isoman` → isolasi mandiri |
+| Emotions & expressions | 80 | `galau`, `bete`, `ghosting`, `crush`, `pdkt` → pendekatan, `mupeng` |
+| Food & drink | 55 | `nasgor` → nasi goreng, `kopsu` → kopi susu, `laper` → lapar, `kenyang` |
+| Clothing & fashion | 47 | `ootd` → pakaian hari ini, `thrifting` → belanja baju bekas, `hoodie` |
+| Transportation | 36 | `ojol` → ojek online, `krl` → kereta rel listrik, `macet`, `nebeng` → menumpang |
+| Religion & culture | 56 | `alhamdulillah`, `bismillah`, `bukber` → buka bersama, `ultah` → ulang tahun |
+| Education extended | 69 | `bimbel` → bimbingan belajar, `ospek` → orientasi studi, `maba` → mahasiswa baru |
+| Work & office | 85 | `wfh` → kerja dari rumah, `deadline` → batas waktu, `lembur`, `resign` |
+| Numbers & quantity | 35 | `1rb` → seribu, `5jt` → lima juta, `rata2` → rata-rata, `tiba2` → tiba-tiba |
+| Compound expressions | 57 | `ngapain` → sedang apa, `kapan2` → kapan-kapan, `otw ke` → dalam perjalanan ke |
 
 #### Extending the dictionary
 

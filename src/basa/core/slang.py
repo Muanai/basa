@@ -407,6 +407,7 @@ _ADJECTIVES_ADVERBS: Dict[str, str] = {
     "srg":      "sering",
     "jrng":     "jarang",
     "sllu":     "selalu",
+    "slalu":    "selalu",
     "kdng":     "kadang",
     "mgkn":     "mungkin",
     "pst":      "pasti",
@@ -469,6 +470,7 @@ _ADJECTIVES_ADVERBS: Dict[str, str] = {
     "pelan2":   "pelan-pelan",
     "lama2":    "lama-lama",
     "buru2":    "terburu-buru",
+    "kwalitas": "kualitas",
 }
 
 # Question words
@@ -596,6 +598,8 @@ _TEMPORAL_LOCATION: Dict[str, str] = {
     "malem": "malam",
     "pg":    "pagi",
     "sni":   "sini",
+    "dsini": "di sini",
+    "dsni":  "di sini",
     "sono":  "sana",
     "mgg":   "minggu",
     "bln":   "bulan",
@@ -1079,7 +1083,7 @@ _CLOTHING_FASHION: Dict[str, str] = {
     "kaos":      "kaus",
     "kos":       "kaus",
     "kmja":      "kemeja",
-    "jkt":       "jaket",
+    "jket":       "jaket",
     "cln":       "celana",
     "dress":     "gaun",
     "jlbb":      "jilbab",
