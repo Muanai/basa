@@ -296,8 +296,6 @@ _VERBS: Dict[str, str] = {
     # Extended verbs
     "bikin":     "membuat",
     "bkin":      "membuat",
-    "kasih":     "berikan",
-    "ksih":      "berikan",
     "ambl":      "ambil",
     "simpen":    "simpan",
     "smpen":     "simpan",
@@ -424,6 +422,10 @@ _ADJECTIVES_ADVERBS: Dict[str, str] = {
     "gt":       "begitu",
     "gini":     "begini",
     "gn":       "begini",
+    "segini":   "sebanyak ini",
+    "sgini":    "sebanyak ini",
+    "segitu":   "sebanyak itu",
+    "sgitu":    "sebanyak itu",
     "bnyk":     "banyak",
     "byk":      "banyak",
     "bnyak":    "banyak",
@@ -1637,6 +1639,12 @@ for _cat in (
 # Rationale: vowel elongation is always expressive, never meaningful.
 _VOWEL_REPEAT = re.compile(r'([aeiouAEIOU])\1+')
 
+# Strict vowel reduction: only collapse 3+ consecutive identical vowels.
+# Used in the global fallback pass so that valid standard Indonesian spellings
+# containing double vowels (e.g. "pekerjaan", "maaf", "laal") are NOT touched,
+# while obvious elongation ("manaaaa", "beneeer") is still reduced.
+_VOWEL_REPEAT_STRICT = re.compile(r'([aeiouAEIOU])\1{2,}')
+
 # Consonants: reduce 3+ consecutive identical consonants → 1
 # e.g. "bgttt" → "bgt", "wkwwwk" → "wkwk"
 # Rationale: keep "kk" (kakak), "ll" (dalam "dll"), "mm" etc. intact;
@@ -1718,6 +1726,21 @@ class SlangNormalizer:
         text = _CONSONANT_REPEAT.sub(r'\1', text)
         return text
 
+    @staticmethod
+    def _reduce_repeated_chars_strict(text: str) -> str:
+        """
+        Like _reduce_repeated_chars but uses a stricter threshold for vowels:
+        only collapses 3+ consecutive identical vowels (not 2+).
+
+        This is used as the global fallback pass inside normalize() so that
+        standard Indonesian words with legitimate double vowels (e.g.
+        "pekerjaan", "maaf") are not corrupted, while obvious elongation
+        ("manaaaa", "beneeer") is still collapsed.
+        """
+        text = _VOWEL_REPEAT_STRICT.sub(r'\1', text)
+        text = _CONSONANT_REPEAT.sub(r'\1', text)
+        return text
+
     # ─── Public API ──────────────────────────────────────────────────────────
 
     def normalize(self, text: str, normalize_whitespace: bool = True) -> str:
@@ -1725,9 +1748,11 @@ class SlangNormalizer:
         Normalize a single text string.
 
         Pipeline:
-            1. Reduce elongated characters (vowels then consonants)
-            2. Replace slang tokens via compiled regex
-            3. (Optionally) collapse multiple whitespace into one
+            1. Slang replacement with two-pass per-token lookup
+            2. Global repeated-char reduction for out-of-vocab elongated words
+            3. Second regex pass for words newly recognisable after reduction
+               (e.g. "gwwww" → step2 → "gw" → step3 → "saya")
+            4. (Optionally) collapse multiple whitespace into one
 
         Args:
             text: Input text string.
@@ -1736,32 +1761,52 @@ class SlangNormalizer:
 
         Returns:
             Normalized text string.
-
-        Example:
-            >>> slang.normalize("gw gamau pergi krn lg baper bgt")
-            'saya tidak mau pergi karena sedang bawa perasaan banget'
-
-            >>> slang.normalize("makasihhhh bgttttt")
-            'terima kasih banget'
-
-            >>> slang.normalize("gwwww gkkkk ngertiii")
-            'saya tidak mengerti'
         """
         if not text or not text.strip():
             return text
 
-        # Step 1: Reduce elongated characters
-        text = self._reduce_repeated_chars(text)
-
-        # Step 2: Apply slang replacements
+        # Step 1: Slang replacement with two-pass per-token lookup.
+        # The regex matches candidates from the slang dict; for each match:
+        #   Pass A – lookup the original token (handles "krjaan" which has a
+        #            meaningful double-a that char-reduction would destroy).
+        #   Pass B – reduce repeated chars first, then lookup (handles elongated
+        #            forms like "gkkkk" → "gk" → "tidak").
+        #   Fallback – return the char-reduced form so elongation is still
+        #              collapsed even when no dict entry exists.
         if self._regex:
             def _replace(match: re.Match) -> str:
-                word = match.group(1).lower()
-                return self.mapping.get(word, match.group(1))
+                original = match.group(1)
+                word = original.lower()
+
+                # Pass A: direct lookup (preserve meaningful repeated vowels)
+                if word in self.mapping:
+                    return self.mapping[word]
+
+                # Pass B: reduce chars first, then lookup
+                reduced = self._reduce_repeated_chars(word)
+                if reduced in self.mapping:
+                    return self.mapping[reduced]
+
+                # Fallback: return char-reduced form
+                return self._reduce_repeated_chars(original)
 
             text = self._regex.sub(_replace, text)
 
-        # Step 3: Normalize whitespace
+        # Step 2: Global char reduction (strict mode) for words not captured
+        # by the dict regex, e.g. out-of-vocab elongated words ("manaaaa" ->
+        # "mana") or words whose elongated form isn't in the regex ("gwwww" ->
+        # "gw").
+        # STRICT: only collapses 3+ consecutive identical vowels so that valid
+        # standard Indonesian double vowels in replacement outputs (e.g.
+        # "pekerjaan") are NOT corrupted.
+        text = self._reduce_repeated_chars_strict(text)
+
+        # Step 3: Second regex pass — catches words that only became recognisable
+        # after Step 2 (e.g. "gwwww" -> "gw" -> "saya", "gkkkk" -> "gk" -> "tidak").
+        if self._regex:
+            text = self._regex.sub(_replace, text)
+
+        # Step 4: Normalize whitespace
         if normalize_whitespace:
             text = _WHITESPACE.sub(' ', text).strip()
 
