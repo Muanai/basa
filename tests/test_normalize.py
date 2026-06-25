@@ -76,6 +76,144 @@ class TestRepeatCharReduction:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# TWO-PASS NORMALIZATION PIPELINE (regression tests for fixed bugs)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestTwoPassNormalizationPipeline:
+    """
+    Regression tests for the two-pass lookup pipeline introduced to fix a bug
+    where global vowel reduction ran *before* dictionary lookup, destroying
+    valid double-vowel sequences in slang abbreviations.
+
+    Root cause: "krjaan" → (global 2+ vowel reduction) → "krjan"
+                (not in dict) → stays as "krjan" instead of "pekerjaan".
+
+    Fix: dictionary lookup now happens *before* per-token char reduction
+    (Pass A), and again *after* (Pass B). Global strict reduction (3+ vowels
+    only) runs as a fallback for out-of-vocab words.
+    """
+
+    def test_double_vowel_in_slang_abbreviation_preserved(self):
+        # Regression: "krjaan" has a valid double-a that must NOT be reduced
+        # before the slang lookup. "krjaan" → "pekerjaan" (not "pekerjan").
+        assert normalize("krjaan byk bgt") == "pekerjaan banyak banget"
+
+    def test_double_vowel_in_full_sentence_preserved(self):
+        # Original bug report: "krjaan" inside a longer sentence.
+        assert normalize("kzl bgt hr ini krjaan byk bgt") == "kesal banget hari ini pekerjaan banyak banget"
+
+    def test_valid_double_vowel_in_replacement_not_corrupted(self):
+        # Replacement outputs from the dict (e.g., "pekerjaan", "maaf") must
+        # NOT have their legitimate double vowels collapsed by the global pass.
+        result = normalize("krjaan")
+        assert "aa" in result, f"Expected 'aa' in output, got: {result!r}"
+
+    def test_elongated_slang_reduced_then_looked_up(self):
+        # Pass B: elongated form not in dict → reduce first → lookup.
+        # "gwwww" is not in dict; reduce → "gw" → "saya".
+        assert normalize("gwwww") == "saya"
+
+    def test_elongated_vowel_slang_reduced_then_looked_up(self):
+        # "gkkkk" not in dict; reduce → "gk" → "tidak".
+        assert normalize("gkkkk") == "tidak"
+
+    def test_elongated_out_of_vocab_word_still_reduced(self):
+        # Out-of-vocab elongated word: no dict entry, just apply fallback reduction.
+        # "manaaaa" (4 a's) → strict pass collapses to "mana" (standard word).
+        result = normalize("manaaaa")
+        assert result == "mana"
+
+    def test_valid_double_vowel_in_dict_output_not_corrupted(self):
+        # The strict global reduction pass only collapses 3+ consecutive identical
+        # vowels. Dictionary replacement outputs that contain legitimate double
+        # vowels (e.g. "pekerjaan" has "aa") must NOT be collapsed.
+        # "krjaan" -> "pekerjaan" (dict lookup). The global pass that follows
+        # must not then collapse "aa" → "a" because it only triggers on 3+.
+        result = normalize("krjaan")
+        assert result == "pekerjaan", f"Expected 'pekerjaan', got: {result!r}"
+
+    def test_batch_preserves_double_vowel(self):
+        # Batch mode must exhibit the same correct behavior.
+        inputs = ["krjaan byk bgt", "kzl bgt hr ini krjaan byk bgt"]
+        results = normalize(inputs)
+        assert "pekerjaan" in results[0]
+        assert "pekerjaan" in results[1]
+        assert "pekerjan" not in results[0]
+        assert "pekerjan" not in results[1]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# AMBIGUOUS MAPPING REMOVAL (kasih → berikan)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestKasihMappingRemoved:
+    """
+    Regression tests for the removal of the ambiguous "kasih" → "berikan"
+    mapping, which was corrupting multi-word phrases like "terima kasih".
+    """
+
+    def test_kasih_not_mapped_to_berikan(self):
+        # "kasih" alone must NOT be replaced with "berikan" anymore.
+        assert normalize("kasih") == "kasih"
+
+    def test_terima_kasih_not_corrupted(self):
+        # Key regression: "terima kasih" must stay as-is (or be normalized
+        # via the greetings dict), never become "terima berikan".
+        result = normalize("terima kasih")
+        assert "berikan" not in result
+
+    def test_makasih_still_maps_to_terima_kasih(self):
+        # The shorthand "makasih" must still work via the greetings dictionary.
+        assert normalize("makasih") == "terima kasih"
+
+    def test_tq_still_maps_to_terima_kasih(self):
+        # Other thanks shorthands unaffected.
+        assert normalize("tq") == "terima kasih"
+
+    def test_ksih_not_mapped_to_berikan(self):
+        # "ksih" (the compressed variant) was also removed.
+        assert normalize("ksih") == "ksih"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# NEW DICTIONARY ENTRIES
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestNewDictionaryEntries:
+    """Tests for slang words newly added to the dictionary."""
+
+    def test_pegi_maps_to_pergi(self):
+        assert normalize("pegi") == "pergi"
+
+    def test_pegi_in_sentence(self):
+        assert normalize("gw mau pegi dlu ya") == "saya mau pergi dulu ya"
+
+    def test_nyesel_maps_to_menyesal(self):
+        assert normalize("nyesel") == "menyesal"
+
+    def test_nyesel_in_sentence(self):
+        assert normalize("gw nyesel bgt") == "saya menyesal banget"
+
+    def test_sgini_maps_to_sebanyak_ini(self):
+        assert normalize("sgini") == "sebanyak ini"
+
+    def test_segini_maps_to_sebanyak_ini(self):
+        assert normalize("segini") == "sebanyak ini"
+
+    def test_sgitu_maps_to_sebanyak_itu(self):
+        assert normalize("sgitu") == "sebanyak itu"
+
+    def test_segitu_maps_to_sebanyak_itu(self):
+        assert normalize("segitu") == "sebanyak itu"
+
+    def test_sgini_in_sentence(self):
+        assert normalize("kok mahal sgini sih") == "kok mahal sebanyak ini sih"
+
+    def test_sgitu_in_sentence(self):
+        assert normalize("ga nyangka sgitu banyaknya") == "tidak nyangka sebanyak itu banyaknya"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # PUNCTUATION REDUCTION
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -167,16 +305,16 @@ class TestWhitespace:
 class TestTypoCorrection:
     def test_typo_disabled_by_default(self):
         # Even without a vocab, the default apply_typo=False must not cause an error.
-        # Use "pegi" (a typo of "pergi") — not a slang abbreviation, no repeated chars.
-        assert normalize("saya pegi") == "saya pegi"
+        # Use "mkaan" (a misspelling of "makan") — not in the slang dict, no repeated chars.
+        assert normalize("saya mkaan") == "saya mkaan"
 
     def test_typo_opt_in_corrects_word(self):
-        typo.add_to_vocab({"pergi", "minum"})
-        assert normalize("saya pegi", apply_typo=True) == "saya pergi"
+        typo.add_to_vocab({"makan", "minum"})
+        assert normalize("saya mkaan", apply_typo=True) == "saya makan"
 
     def test_typo_safeguard_empty_vocab(self):
         # apply_typo=True with empty vocab → no error, does not modify text
-        assert normalize("saya pegi", apply_typo=True) == "saya pegi"
+        assert normalize("saya mkaan", apply_typo=True) == "saya mkaan"
 
     def test_typo_does_not_corrupt_in_vocab_word(self):
         typo.add_to_vocab({"makan", "minum"})
@@ -184,11 +322,11 @@ class TestTypoCorrection:
         assert normalize("saya makan", apply_typo=True) == "saya makan"
 
     def test_typo_runs_after_slang(self):
-        # Slang first: "gw" → "saya", then typo correction
-        # "pegi" is a genuine typo of "pergi", not in slang dict
-        typo.add_to_vocab({"pergi", "saya"})
-        result = normalize("gw pegi", apply_typo=True)
-        assert result == "saya pergi"
+        # Slang first: "gw" → "saya", then typo correction.
+        # "mkaan" is a genuine typo of "makan", not in slang dict.
+        typo.add_to_vocab({"makan", "saya"})
+        result = normalize("gw mkaan", apply_typo=True)
+        assert result == "saya makan"
 
 
 # ─────────────────────────────────────────────────────────────────────────────

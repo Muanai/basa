@@ -352,6 +352,7 @@ _VERBS: Dict[str, str] = {
     "bljar":     "belajar",
     "ngajar":    "mengajar",
     "ngjar":     "mengajar",
+    "pegi":      "pergi",
 }
 
 # Adjectives, adverbs, and discourse particles
@@ -1013,6 +1014,8 @@ _EMOTIONS_EXPRESSIONS: Dict[str, str] = {
     "santey":    "santai",
     "ndak":      "tidak",
     "enggak":    "tidak",
+    "nyesel":    "menyesal",
+    "ngsyel":    "menyesal",
 }
 
 # Food & drink vocabulary
