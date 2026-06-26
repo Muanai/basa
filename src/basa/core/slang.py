@@ -1652,7 +1652,9 @@ _VOWEL_REPEAT_STRICT = re.compile(r'([aeiouAEIOU])\1{2,}')
 # e.g. "bgttt" → "bgt", "wkwwwk" → "wkwk"
 # Rationale: keep "kk" (kakak), "ll" (dalam "dll"), "mm" etc. intact;
 #            only collapse truly elongated forms (3+).
-_CONSONANT_REPEAT = re.compile(r'([^aeiouAEIOU\s\d])\1{2,}')
+# Note: [^\W\s\d] matches letter-only consonants, excluding punctuation
+# so that "!!!" is NOT reduced here (that is handled by normalize_punctuation).
+_CONSONANT_REPEAT = re.compile(r'([^\W\s\daeiouAEIOU])\1{2,}')
 
 # Whitespace normalization
 _WHITESPACE = re.compile(r'\s+')
@@ -1746,7 +1748,39 @@ class SlangNormalizer:
 
     # ─── Public API ──────────────────────────────────────────────────────────
 
-    def normalize(self, text: str, normalize_whitespace: bool = True) -> str:
+    @staticmethod
+    def _mirror_case(original: str, replacement: str) -> str:
+        """
+        Mirror the casing pattern of ``original`` onto ``replacement``.
+
+        Rules (applied in priority order):
+            - All-uppercase original  → replacement.upper()
+            - Title-case original     → replacement.capitalize()
+            - Mixed / lowercase       → replacement unchanged (already lowercase)
+
+        This lets ``normalize(lowercase=False)`` preserve casing intent
+        even after slang substitution.
+
+        Examples:
+            >>> SlangNormalizer._mirror_case("GW", "saya")
+            'SAYA'
+            >>> SlangNormalizer._mirror_case("Gw", "saya")
+            'Saya'
+            >>> SlangNormalizer._mirror_case("gw", "saya")
+            'saya'
+        """
+        if original.isupper():
+            return replacement.upper()
+        if original[0].isupper():
+            return replacement.capitalize()
+        return replacement
+
+    def normalize(
+        self,
+        text: str,
+        normalize_whitespace: bool = True,
+        lowercase: bool = True,
+    ) -> str:
         """
         Normalize a single text string.
 
@@ -1761,6 +1795,10 @@ class SlangNormalizer:
             text: Input text string.
             normalize_whitespace: If True, collapse multi-space into single
                                   space and strip leading/trailing whitespace.
+            lowercase: If True (default), replacement values are returned as-is
+                       (all lowercase). If False, the casing pattern of the
+                       original matched token is mirrored onto the replacement
+                       (ALL-CAPS → upper, Title → capitalize, mixed → as-is).
 
         Returns:
             Normalized text string.
@@ -1783,14 +1821,16 @@ class SlangNormalizer:
 
                 # Pass A: direct lookup (preserve meaningful repeated vowels)
                 if word in self.mapping:
-                    return self.mapping[word]
+                    result = self.mapping[word]
+                    return self._mirror_case(original, result) if not lowercase else result
 
                 # Pass B: reduce chars first, then lookup
                 reduced = self._reduce_repeated_chars(word)
                 if reduced in self.mapping:
-                    return self.mapping[reduced]
+                    result = self.mapping[reduced]
+                    return self._mirror_case(original, result) if not lowercase else result
 
-                # Fallback: return char-reduced form
+                # Fallback: return char-reduced form (preserves original case)
                 return self._reduce_repeated_chars(original)
 
             text = self._regex.sub(_replace, text)
@@ -1819,6 +1859,7 @@ class SlangNormalizer:
         self,
         texts: List[str],
         normalize_whitespace: bool = True,
+        lowercase: bool = True,
     ) -> List[str]:
         """
         Normalize a list of text strings efficiently.
@@ -1826,6 +1867,7 @@ class SlangNormalizer:
         Args:
             texts: List of input strings.
             normalize_whitespace: Passed through to normalize().
+            lowercase: Passed through to normalize().
 
         Returns:
             List of normalized strings (same order as input).
@@ -1834,7 +1876,7 @@ class SlangNormalizer:
             >>> slang.normalize_batch(["gw udah makan", "km blm tidur?"])
             ['saya sudah makan', 'kamu belum tidur?']
         """
-        return [self.normalize(t, normalize_whitespace) for t in texts]
+        return [self.normalize(t, normalize_whitespace, lowercase) for t in texts]
 
     def add(self, word: str, replacement: str) -> None:
         """

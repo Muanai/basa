@@ -100,7 +100,7 @@ def _normalize_single(
     # e.g. "GKKKK" → (lower) "gkkkk" → (char reduce) "gk" → "tidak"
     # We defer whitespace normalization to Stage 5.
     if apply_slang:
-        text = slang_engine.normalize(text, normalize_whitespace=False)
+        text = slang_engine.normalize(text, normalize_whitespace=False, lowercase=lowercase)
 
     # ── Stage 3: Typo Correction (Strictly Opt-in) ───────────────────────────
     # Safeguard: skip if vocab is empty to prevent no-op full-corpus scans.
