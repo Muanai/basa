@@ -233,14 +233,12 @@ class TestPunctuationReduction:
         assert normalize("makan?") == "makan?"
 
     def test_normalize_punctuation_false(self):
-        # Implementation note: the slang engine also reduces repeated chars
-        # (including punctuation) internally before stage 4.
-        # Therefore, normalize_punctuation=False only disables
-        # stage 4 (_reduce_punctuation), but the slang stage already reduces them.
-        # This test validates that the flag does not cause errors.
+        # normalize_punctuation=False must preserve ALL repeated punctuation marks.
+        # The slang engine's consonant reducer now excludes punctuation chars so
+        # "!!!!!" is NOT collapsed internally — it is only collapsed by stage 4
+        # which is disabled here.
         result = normalize("serius!!!!!", normalize_punctuation=False)
-        assert isinstance(result, str)  # no error
-        assert "serius" in result       # the main word remains
+        assert result == "serius!!!!!"
 
     def test_mixed_punctuation_types(self):
         # Each type of punctuation is reduced independently
@@ -260,13 +258,13 @@ class TestLowercase:
         result = normalize("Jokowi pergi ke Jakarta", lowercase=False)
         assert result == "Jokowi pergi ke Jakarta"
 
-    def test_lowercase_false_slang_engine_still_matches(self):
-        # Implementation note: the slang engine performs internal lowercasing
-        # when matching, so "GW" still matches "saya" even if
-        # the lowercase=False parameter is set (which only controls stage 1).
-        # This test explicitly documents this behavior.
-        result = normalize("GW", lowercase=False, apply_slang=True)
-        assert result == "saya"  # internal slang engine lowercase is active
+    def test_lowercase_false_slang_engine_mirrors_case(self):
+        # When lowercase=False, the slang engine still matches tokens
+        # case-insensitively, but mirrors the matched token's casing onto
+        # the replacement: ALL-CAPS → upper, Title → capitalize, lower → as-is.
+        assert normalize("GW", lowercase=False) == "SAYA"
+        assert normalize("Gw", lowercase=False) == "Saya"
+        assert normalize("gw", lowercase=False) == "saya"
 
     def test_mixed_case_normalized(self):
         # "GwW" → (lowercase stage 1) "gww" → slang lookup
@@ -397,6 +395,7 @@ class TestEdgeCases:
         result = normalize("cek di tokopedia.com")
         assert "tokopedia.com" in result
 
+
     def test_all_flags_false(self):
         # All stages turned off → text is returned as-is (pass-through only)
         raw = "GW GK NGERTI BNT!!!!!"
@@ -409,3 +408,97 @@ class TestEdgeCases:
             normalize_whitespace=False,
         )
         assert result == raw
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# REGRESSION: lowercase=False and normalize_punctuation=False flags
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestFlagRegressions:
+    """
+    Regression tests for two bugs where the ``lowercase`` and
+    ``normalize_punctuation`` flags were ignored.
+
+    Root cause 1 (lowercase):
+        The slang engine's ``_replace()`` always returned the lowercase dict
+        value regardless of the caller's ``lowercase`` flag.
+        Fix: ``_mirror_case()`` maps the original token's casing pattern onto
+        the replacement (ALL-CAPS → upper, Title → capitalize, lower → as-is).
+
+    Root cause 2 (punctuation):
+        ``_CONSONANT_REPEAT`` matched ``([^aeiouAEIOU\\s\\d])\\1{2+}``, which
+        included punctuation chars, so ``!!!`` was collapsed inside the slang
+        engine before stage 4 (``normalize_punctuation``) was even reached.
+        Fix: pattern changed to ``([^\\W\\s\\daeiouAEIOU])\\1{2+}`` (letter
+        consonants only), so punctuation reduction is exclusively controlled
+        by ``normalize_punctuation``.
+    """
+
+    # ── lowercase=False ───────────────────────────────────────────────────────
+
+    def test_lowercase_false_all_caps_sentence(self):
+        # "GW KESEL BGT" → each token uppercase → replacements mirrored to upper
+        result = normalize("GW KESEL BGT", lowercase=False)
+        assert result == "SAYA KESEL BANGET"
+
+    def test_lowercase_false_title_case_slang(self):
+        # "Gw" is title-case → replacement should be capitalized
+        assert normalize("Gw pergi", lowercase=False) == "Saya pergi"
+
+    def test_lowercase_false_lowercase_slang_unchanged(self):
+        # "gw" is lowercase → replacement stays lowercase (no change)
+        assert normalize("gw pergi", lowercase=False) == "saya pergi"
+
+    def test_lowercase_false_preserves_non_slang_caps(self):
+        # Non-slang words (e.g. named entities) must keep their original case
+        result = normalize("GW ke Jakarta", lowercase=False)
+        assert "Jakarta" in result
+
+    def test_lowercase_false_mixed_caps_in_sentence(self):
+        # Combination: ALL-CAPS slang + regular lowercase word + non-slang caps
+        result = normalize("GW KESEL BGT", lowercase=False)
+        assert result == "SAYA KESEL BANGET"
+
+    def test_lowercase_false_does_not_uppercase_non_matched_words(self):
+        # Words not in the slang dict must not have their casing changed
+        result = normalize("GW ke Jakarta", lowercase=False)
+        assert "ke" in result  # lowercase non-slang preserved
+
+    # ── normalize_punctuation=False ───────────────────────────────────────────
+
+    def test_normalize_punctuation_false_preserves_triple_exclamation(self):
+        # "!!!" must survive unchanged when normalize_punctuation=False
+        result = normalize("keren bgt!!!", normalize_punctuation=False)
+        assert result == "keren banget!!!"
+
+    def test_normalize_punctuation_false_preserves_many_exclamations(self):
+        # Five or more marks must also be preserved
+        result = normalize("mantap!!!!!", normalize_punctuation=False)
+        assert result == "mantap!!!!!"
+
+    def test_normalize_punctuation_false_preserves_question_marks(self):
+        result = normalize("serius????", normalize_punctuation=False)
+        assert result == "serius????"
+
+    def test_normalize_punctuation_false_preserves_mixed_punct(self):
+        # Different punctuation types, each run kept intact
+        result = normalize("wow!!! kok bisa???", normalize_punctuation=False)
+        assert result == "wow!!! kok bisa???"
+
+    def test_normalize_punctuation_true_still_collapses(self):
+        # Ensure the default behaviour (True) still works after the regex fix
+        assert normalize("keren bgt!!!") == "keren banget!"
+        assert normalize("serius?????") == "serius?"
+
+    # ── combined scenario from the original bug report ────────────────────────
+
+    def test_typo_correction_pipeline(self):
+        # Full pipeline: slang off → typo correction → correct output
+        typo.add_to_vocab({"saya", "makan", "nasi", "goreng"})
+        result = normalize("sayy mkan nsai groeng", apply_typo=True)
+        assert result == "saya makan nasi goreng"
+
+    def test_lowercase_false_and_punctuation_false_combined(self):
+        # Both flags disabled simultaneously
+        result = normalize("GW KESEL BGT!!!", lowercase=False, normalize_punctuation=False)
+        assert result == "SAYA KESEL BANGET!!!"
