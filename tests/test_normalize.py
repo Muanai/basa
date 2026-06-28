@@ -502,3 +502,85 @@ class TestFlagRegressions:
         # Both flags disabled simultaneously
         result = normalize("GW KESEL BGT!!!", lowercase=False, normalize_punctuation=False)
         assert result == "SAYA KESEL BANGET!!!"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# REGRESSION: slang output must not be corrupted by typo corrector
+#
+# Bug: after slang normalization produced correct Indonesian words (e.g.
+# "mahal", "kasih", "saudara"), the typo corrector saw them as OOV and
+# mis-corrected them to the nearest word in the user's small vocab (e.g.
+# "nasi", "makan") via Levenshtein distance.
+#
+# Fix: all slang dictionary *values* are pre-loaded into `typo._protected`
+# at import time.  Words in that whitelist bypass the distance scan entirely.
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestTypoSlangInteraction:
+    """
+    Regression tests for the slang-output corruption bug.
+
+    The typo corrector must never mutate a word that was legitimately
+    produced by slang normalization, even when the user's vocabulary happens
+    to contain a Levenshtein-close word.
+    """
+
+    # ── individual slang outputs that were historically mis-corrected ─────────
+
+    def test_mahal_not_corrupted_to_makan(self):
+        # "mhl" → (slang) "mahal".  With vocab {"makan"}, typo must NOT
+        # replace "mahal" → "makan" (edit distance 2, would pass the old guard).
+        typo.add_to_vocab({"makan"})
+        result = normalize("mhl", apply_typo=True)
+        assert result == "mahal", f"Expected 'mahal', got '{result}'"
+
+    def test_kasih_not_corrupted_to_nasi(self):
+        # "thx" → (slang) "terima kasih".  With vocab {"nasi"}, "kasih" must
+        # not be replaced with "nasi" (edit dist 2, was falsely accepted before).
+        typo.add_to_vocab({"nasi"})
+        result = normalize("thx", apply_typo=True)
+        assert result == "terima kasih", f"Expected 'terima kasih', got '{result}'"
+
+    def test_saudara_not_corrupted(self):
+        # "gan" → (slang) "saudara".  With a small vocab, "saudara" must
+        # survive typo correction unchanged.
+        typo.add_to_vocab({"makan", "nasi", "goreng"})
+        result = normalize("gan", apply_typo=True)
+        assert result == "saudara", f"Expected 'saudara', got '{result}'"
+
+    # ── exact notebook scenario that originally triggered the bug ─────────────
+
+    def test_ecommerce_review_pipeline_no_nasi_corruption(self):
+        # Reproduces the exact bug from the notebook (Section 3 vocab leaking
+        # into Section 6).  None of the three cleaned sentences should contain
+        # the word "nasi" or "makan" in a position that was not in the original.
+        typo.add_to_vocab({"saya", "makan", "nasi", "goreng"})
+
+        r1 = normalize("brgnya bgssss bgt gk nyesel bli dsni thx gan!!!", apply_typo=True)
+        assert "nasi" not in r1, f"'nasi' should not appear in: {r1}"
+        assert "terima kasih" in r1
+
+        r2 = normalize("pdhl hrga mhl tp kwalitas jlek kcewa pokonya..", apply_typo=True)
+        assert "mahal" in r2, f"'mahal' should survive; got: {r2}"
+        # "makan" must NOT appear where "mahal" was
+        words_r2 = r2.split()
+        assert words_r2.count("makan") == 0, f"Unexpected 'makan' in: {r2}"
+
+        r3 = normalize("lmyn lh buat hrga sgini", apply_typo=True)
+        assert r3 == "lumayan lah buat harga sebanyak ini"
+
+    # ── protected vocab does not block legitimate typo correction ─────────────
+
+    def test_typo_correction_still_works_for_non_slang_words(self):
+        # Regression guard: the whitelist must not prevent correction of
+        # genuine typos in words that are not slang outputs.
+        typo.add_to_vocab({"saya", "makan", "nasi", "goreng"})
+        result = normalize("sayy mkan nsai groeng", apply_typo=True)
+        assert result == "saya makan nasi goreng"
+
+    def test_typo_correction_disabled_by_default(self):
+        # With apply_typo=False (default), the small vocab must have zero
+        # influence on the output — slang engine alone runs.
+        typo.add_to_vocab({"nasi", "goreng"})
+        result = normalize("thx gan")
+        assert result == "terima kasih saudara"
