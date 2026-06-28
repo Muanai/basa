@@ -162,6 +162,14 @@ class TypoCorrector:
         self.min_word_length = min_word_length
         self.min_confidence  = min_confidence
 
+        # ── Protected vocab (whitelist) ───────────────────────────────────────
+        # Words in this set are always returned unchanged by correct(), even
+        # when they are not in self.vocab.  This lets normalize.py silently
+        # shield all slang-output values (e.g. "mahal", "terima kasih") from
+        # being mis-corrected back to a short user vocab like {"nasi", "goreng"}.
+        # Managed internally — not exposed as a public vocabulary to the caller.
+        self._protected: Set[str] = set()
+
         # ── Lookup cache ─────────────────────────────────────────────────────
         # Maps lowercased token → corrected word.
         # In real-world corpora the same misspelling often appears hundreds of
@@ -187,6 +195,31 @@ class TypoCorrector:
         self._cache.clear()
         self._cache_hits   = 0
         self._cache_misses = 0
+
+    # ─── Protected vocab management ──────────────────────────────────────────
+
+    def set_protected(self, words: Set[str]) -> None:
+        """
+        Replace the internal whitelist with the given word set.
+
+        Words in the protected set are always returned as-is by correct(),
+        bypassing both the Levenshtein scan and the confidence filter.
+        This is used by normalize.py to shield slang-output values from
+        accidental re-correction.
+
+        Args:
+            words: Set of lowercase words to protect (multi-word values are
+                   split on whitespace so each token is protected individually).
+
+        Example:
+            >>> corrector.set_protected({"mahal", "terima kasih"})
+        """
+        self._protected = {
+            token
+            for phrase in words
+            for token in phrase.lower().split()
+        }
+        self._invalidate_cache()
 
     # ─── Vocabulary management ───────────────────────────────────────────────
 
@@ -266,16 +299,23 @@ class TypoCorrector:
         if not self.vocab:
             return word
 
-        # Guard 2: Word already in vocab — already correct
+        # Guard 2: Word is protected (slang output whitelist) — skip correction
+        # This prevents words like "mahal" or "kasih" (produced by slang
+        # normalization) from being mis-corrected to a short user vocab word
+        # (e.g. "nasi" or "goreng") that happens to be close in edit distance.
+        if word_lower in self._protected:
+            return word
+
+        # Guard 3: Word already in vocab — already correct
         if word_lower in self.vocab:
             return word
 
-        # Guard 3: Word too short — correction is too risky
+        # Guard 4: Word too short — correction is too risky
         # e.g. "di", "ya", "ok" have many neighbours at distance 1–2
         if len(word_lower) < self.min_word_length:
             return word
 
-        # Guard 4: Return cached result if available
+        # Guard 5: Return cached result if available
         if word_lower in self._cache:
             self._cache_hits += 1
             return self._cache[word_lower]

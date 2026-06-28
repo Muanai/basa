@@ -37,6 +37,21 @@ from typing import List, Union
 from .slang import slang as slang_engine
 from .typo import typo as typo_engine
 
+# ─────────────────────────────────────────────────────────────────────────────
+# SLANG OUTPUT WHITELIST
+# ─────────────────────────────────────────────────────────────────────────────
+# All normalised values produced by the slang engine (e.g. "mahal", "terima
+# kasih", "saudara") must never be treated as typos.  We pre-compute the set
+# once at import time and pass it to the typo engine as a protected vocab so
+# that words which are already correct are not mis-corrected to whatever small
+# vocabulary the caller happens to have loaded.
+_SLANG_OUTPUT_WORDS: frozenset = frozenset(
+    token
+    for value in slang_engine.mapping.values()
+    for token in value.lower().split()
+)
+typo_engine.set_protected(_SLANG_OUTPUT_WORDS)
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # INTERNAL HELPERS
