@@ -231,7 +231,7 @@ slang.normalize_batch(["gw makan", "lu minum"])
 
 #### Slang dictionary categories
 
-The built-in dictionary covers **1,200+ entries** across 27 categories:
+The built-in dictionary covers **1,300+ entries** across 27 categories:
 
 | Category | Count | Examples |
 |---|---|---|
@@ -240,9 +240,9 @@ The built-in dictionary covers **1,200+ entries** across 27 categories:
 | Negation | 22 | `ga`, `gak`, `nggak`, `kagak`, `jangan`, `belom` → tidak/belum/jangan |
 | Compound negation | 30 | `gamau` → tidak mau, `gabisa` → tidak bisa, `gatau` → tidak tahu |
 | Conjunctions | 51 | `yg` → yang, `krn` → karena, `stlh` → setelah, `sblm` → sebelum |
-| Verbs | 98 | `udah` → sudah, `ngerti` → mengerti, `nyari` → mencari, `ngobrol` → mengobrol |
-| Adjectives & adverbs | 111 | `bgt` → banget, `lmyn` → lumayan, `pdhl` → padahal, `kyknya` → sepertinya |
-| Question words | 16 | `gmn` → bagaimana, `knp` → kenapa, `kumaha` → bagaimana (Sunda) |
+| Verbs | 99 | `udah` → sudah, `ngerti` → mengerti, `nyari` → mencari, `ngobrol` → mengobrol |
+| Adjectives & adverbs | 147 | `bgt` → banget, `lmyn` → lumayan, `pdhl` → padahal, `kyknya` → sepertinya |
+| Question words | 27 | `gmn` → bagaimana, `knp` → kenapa, `kumaha` → bagaimana (Sunda) |
 | Greetings & responses | 73 | `makasih`, `tq`, `sori`, `yoi`, `bye`, `tengkyu` → terima kasih/maaf/dll |
 | Temporal & location | 26 | `skrg` → sekarang, `kmrn` → kemarin, `mgg` → minggu, `wktu` → waktu |
 | Internet slang | 50 | `otw` → dalam perjalanan, `btw` → omong-omong, `lowkey` → diam-diam |
@@ -252,8 +252,8 @@ The built-in dictionary covers **1,200+ entries** across 27 categories:
 | Javanese extended | 35 | `mangan` → makan, `turu` → tidur, `apik` → bagus, `okeh` → banyak |
 | Sundanese extended | 27 | `abdi` → saya, `geus` → sudah, `tiasa` → bisa, `atuh` → dong |
 | Nouns | 46 | `hp` → handphone, `temen` → teman, `matkul` → mata kuliah, `kantor` → kantor |
-| Health | 42 | `dmm` → demam, `opname` → rawat inap, `gws` → lekas sembuh, `isoman` → isolasi mandiri |
-| Emotions & expressions | 80 | `galau`, `bete`, `ghosting`, `crush`, `pdkt` → pendekatan, `mupeng` |
+| Health | 44 | `dmm` → demam, `opname` → rawat inap, `gws` → lekas sembuh, `isoman` → isolasi mandiri |
+| Emotions & expressions | 83 | `galau`, `bete`, `ghosting`, `crush`, `pdkt` → pendekatan, `mupeng` |
 | Food & drink | 55 | `nasgor` → nasi goreng, `kopsu` → kopi susu, `laper` → lapar, `kenyang` |
 | Clothing & fashion | 47 | `ootd` → pakaian hari ini, `thrifting` → belanja baju bekas, `hoodie` |
 | Transportation | 36 | `ojol` → ojek online, `krl` → kereta rel listrik, `macet`, `nebeng` → menumpang |
@@ -390,7 +390,7 @@ pip install -e ".[dev]"         # pytest, ruff, black, mypy
 
 | Version | Status | Features |
 |---|---|---|
-| **v0.1** | ✅ Current | `normalize()`, `quick()`, slang (1,600+ entries, 27 categories), typo corrector |
+| **v0.1** | ✅ Current | `normalize()`, `quick()`, slang (1,300+ entries, 27 categories), typo corrector |
 | **v0.2** | 🔜 Planned | BK-Tree / SymSpell for faster typo correction at large vocab sizes |
 | **v0.3** | 🔜 Planned | Emoji handling, `remove_emoji` flag |
 | **v0.4** | 🔜 Planned | Tokenizer module (`basa.tokenize`) |
