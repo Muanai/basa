@@ -1,6 +1,6 @@
 [project]
 name = "basa"
-version = "0.1.0b2"
+version = "0.1.0b3"
 description = "Modern NLP for Indonesian and regional languages"
 readme = "README.md"
 requires-python = ">=3.10"
