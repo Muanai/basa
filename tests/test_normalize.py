@@ -584,3 +584,54 @@ class TestTypoSlangInteraction:
         typo.add_to_vocab({"nasi", "goreng"})
         result = normalize("thx gan")
         assert result == "terima kasih saudara"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# BATCH NORMALIZATION (LIST INPUT)
+# ─────────────────────────────────────────────────────────────────────────────
+
+class TestBatchNormalization:
+    """
+    Verify that normalize(list) preserves list length and passes non-string
+    elements through unchanged, so the output index always maps 1-to-1 with
+    the input index.
+    """
+
+    def test_none_element_passed_through(self):
+        # None is not a string — it must survive unchanged, not be dropped.
+        result = normalize(["halo", None])
+        assert result == ["halo", None]
+
+    def test_empty_string_passed_through(self):
+        # An empty string is falsy but still a valid list element.
+        # Output length must equal input length.
+        result = normalize(["halo", ""])
+        assert result == ["halo", ""]
+
+    def test_mixed_list_length_preserved(self):
+        # The most common real-world case: a DataFrame column with NaN-like
+        # sentinels.  Output length must match input length exactly.
+        result = normalize(["halo", "", None])
+        assert len(result) == 3
+
+    def test_mixed_list_values_correct(self):
+        # Non-string elements keep their identity; string elements are
+        # normalised as usual.
+        result = normalize(["gw mau", "", None])
+        assert result[0] == "saya mau"
+        assert result[1] == ""
+        assert result[2] is None
+
+    def test_all_valid_strings_normalised(self):
+        # Sanity check: a clean list still produces correct normalised output.
+        result = normalize(["gw mau", "dia udh makan"])
+        assert result == ["saya mau", "dia sudah makan"]
+
+    def test_index_alignment_for_zip(self):
+        # Practical guard: zipping original and result must always work
+        # without IndexError or misaligned rows.
+        original = ["gw lagi makan", None, "dia lg tidur"]
+        result = normalize(original)
+        assert len(result) == len(original)
+        pairs = list(zip(original, result))
+        assert pairs[1] == (None, None)   # sentinel preserved at index 1

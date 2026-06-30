@@ -177,8 +177,10 @@ def normalize(
                                spaces to a single space.
 
     Returns:
-        Normalized string if input is str, or list of normalized strings
-        if input is a list.
+        Normalized string if input is str, or list of the same length if
+        input is a list. Non-string elements (``None``, ``""``, integers,
+        etc.) inside a list are passed through unchanged so that the output
+        index always matches the input index.
 
     Examples:
         >>> from basa import normalize
@@ -195,12 +197,19 @@ def normalize(
         >>> normalize(["gw mkan", "dia mnum"])
         ['saya makan', 'dia minum']
 
+        >>> normalize(["halo", "", None])
+        ['halo', '', None]
+
         >>> normalize("harga naik terus????", normalize_punctuation=True)
         'harga naik terus?'
     """
     # ── Batch path ────────────────────────────────────────────────────────────
     # Delegates each element to _normalize_single — adding new parameters
     # here only requires updating _normalize_single's signature, not this call.
+    #
+    # Guard note: the isinstance check is a *ternary guard*, not a filter, so
+    # non-string elements (None, "", integers) are passed through unchanged and
+    # the output list is always the same length as the input list.
     if isinstance(text, list):
         return [
             _normalize_single(
@@ -211,8 +220,9 @@ def normalize(
                 normalize_punctuation=normalize_punctuation,
                 normalize_whitespace=normalize_whitespace,
             )
-            for t in text
             if isinstance(t, str) and t
+            else t
+            for t in text
         ]
 
     # ── Guard: invalid / empty input ─────────────────────────────────────────
