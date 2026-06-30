@@ -14,8 +14,8 @@ Quick start:
 
 from .core.normalize import normalize
 from .core.quick import quick
-from .core.typo import typo
 from .core.slang import slang
+from .core.typo import typo
 
 __all__ = [
     "normalize",

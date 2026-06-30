@@ -21,12 +21,10 @@ Usage:
 
 from __future__ import annotations
 
-from typing import List, Union
-
 from .normalize import normalize
 
 
-def quick(text: Union[str, List[str]]) -> Union[str, List[str]]:
+def quick(text: str | list[str]) -> str | list[str]:
     """
     Normalize informal Indonesian text with zero configuration.
 

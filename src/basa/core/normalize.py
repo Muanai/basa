@@ -32,7 +32,6 @@ Usage:
 from __future__ import annotations
 
 import re
-from typing import List, Union
 
 from .slang import slang as slang_engine
 from .typo import typo as typo_engine
@@ -46,9 +45,7 @@ from .typo import typo as typo_engine
 # that words which are already correct are not mis-corrected to whatever small
 # vocabulary the caller happens to have loaded.
 _SLANG_OUTPUT_WORDS: frozenset = frozenset(
-    token
-    for value in slang_engine.mapping.values()
-    for token in value.lower().split()
+    token for value in slang_engine.mapping.values() for token in value.lower().split()
 )
 typo_engine.set_protected(_SLANG_OUTPUT_WORDS)
 
@@ -56,6 +53,7 @@ typo_engine.set_protected(_SLANG_OUTPUT_WORDS)
 # ─────────────────────────────────────────────────────────────────────────────
 # INTERNAL HELPERS
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 def _reduce_punctuation(text: str) -> str:
     """
@@ -76,7 +74,7 @@ def _reduce_punctuation(text: str) -> str:
         'seru~ banget~'
     """
     # Match 2+ consecutive occurrences of the same punctuation character
-    return re.sub(r'([.!?,~*\-_])\1+', r'\1', text)
+    return re.sub(r"([.!?,~*\-_])\1+", r"\1", text)
 
 
 def _normalize_single(
@@ -115,7 +113,9 @@ def _normalize_single(
     # e.g. "GKKKK" → (lower) "gkkkk" → (char reduce) "gk" → "tidak"
     # We defer whitespace normalization to Stage 5.
     if apply_slang:
-        text = slang_engine.normalize(text, normalize_whitespace=False, lowercase=lowercase)
+        text = slang_engine.normalize(
+            text, normalize_whitespace=False, lowercase=lowercase
+        )
 
     # ── Stage 3: Typo Correction (Strictly Opt-in) ───────────────────────────
     # Safeguard: skip if vocab is empty to prevent no-op full-corpus scans.
@@ -129,7 +129,7 @@ def _normalize_single(
 
     # ── Stage 5: Whitespace Cleanup ──────────────────────────────────────────
     if normalize_whitespace:
-        text = re.sub(r'\s+', ' ', text).strip()
+        text = re.sub(r"\s+", " ", text).strip()
 
     return text
 
@@ -138,14 +138,15 @@ def _normalize_single(
 # PUBLIC API
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 def normalize(
-    text: Union[str, List[str]],
+    text: str | list[str],
     apply_slang: bool = True,
     apply_typo: bool = False,
     lowercase: bool = True,
     normalize_punctuation: bool = True,
     normalize_whitespace: bool = True,
-) -> Union[str, List[str]]:
+) -> str | list[str]:
     """
     Normalize informal Indonesian text with a single line of code.
 

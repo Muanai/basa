@@ -7,12 +7,13 @@ do not interfere with each other.
 """
 
 import pytest
-from basa import normalize, quick, typo
 
+from basa import normalize, quick, typo
 
 # ─────────────────────────────────────────────────────────────────────────────
 # FIXTURES
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 @pytest.fixture(autouse=True)
 def reset_typo_vocab():
@@ -30,6 +31,7 @@ def reset_typo_vocab():
 # ─────────────────────────────────────────────────────────────────────────────
 # SLANG NORMALIZATION
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class TestSlangNormalization:
     def test_pronoun_gw(self):
@@ -60,6 +62,7 @@ class TestSlangNormalization:
 # REPEATED CHARACTER REDUCTION
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class TestRepeatCharReduction:
     def test_repeated_vowel_in_slang(self):
         assert normalize("bangeeeettt") == "banget"
@@ -78,6 +81,7 @@ class TestRepeatCharReduction:
 # ─────────────────────────────────────────────────────────────────────────────
 # TWO-PASS NORMALIZATION PIPELINE (regression tests for fixed bugs)
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class TestTwoPassNormalizationPipeline:
     """
@@ -100,7 +104,8 @@ class TestTwoPassNormalizationPipeline:
 
     def test_double_vowel_in_full_sentence_preserved(self):
         # Original bug report: "krjaan" inside a longer sentence.
-        assert normalize("kzl bgt hr ini krjaan byk bgt") == "kesal banget hari ini pekerjaan banyak banget"
+        expected = "kesal banget hari ini pekerjaan banyak banget"
+        assert normalize("kzl bgt hr ini krjaan byk bgt") == expected
 
     def test_valid_double_vowel_in_replacement_not_corrupted(self):
         # Replacement outputs from the dict (e.g., "pekerjaan", "maaf") must
@@ -146,6 +151,7 @@ class TestTwoPassNormalizationPipeline:
 # AMBIGUOUS MAPPING REMOVAL (kasih → berikan)
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class TestKasihMappingRemoved:
     """
     Regression tests for the removal of the ambiguous "kasih" → "berikan"
@@ -179,6 +185,7 @@ class TestKasihMappingRemoved:
 # NEW DICTIONARY ENTRIES
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class TestNewDictionaryEntries:
     """Tests for slang words newly added to the dictionary."""
 
@@ -210,12 +217,14 @@ class TestNewDictionaryEntries:
         assert normalize("kok mahal sgini sih") == "kok mahal sebanyak ini sih"
 
     def test_sgitu_in_sentence(self):
-        assert normalize("ga nyangka sgitu banyaknya") == "tidak nyangka sebanyak itu banyaknya"
+        expected = "tidak nyangka sebanyak itu banyaknya"
+        assert normalize("ga nyangka sgitu banyaknya") == expected
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PUNCTUATION REDUCTION
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class TestPunctuationReduction:
     def test_exclamation_mark(self):
@@ -249,6 +258,7 @@ class TestPunctuationReduction:
 # LOWERCASE
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class TestLowercase:
     def test_uppercase_input_lowercased_by_default(self):
         assert normalize("GW GK NGERTI") == "saya tidak mengerti"
@@ -269,7 +279,7 @@ class TestLowercase:
     def test_mixed_case_normalized(self):
         # "GwW" → (lowercase stage 1) "gww" → slang lookup
         # "gww" is not in the slang dictionary because char reduce in the slang engine
-        # operates at the 3+ level for consonants ("www"→"w" but "gww" is not a slang token)
+        # operates at the 3+ level for consonants ("www"→"w" but "gww" is not a token)
         # Only letters repeated 3+ times are reduced, so "gww" → remains "gww"
         # "gK" → "gk" → "tidak"
         result = normalize("GwW gK")
@@ -279,6 +289,7 @@ class TestLowercase:
 # ─────────────────────────────────────────────────────────────────────────────
 # WHITESPACE
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class TestWhitespace:
     def test_leading_trailing_stripped(self):
@@ -300,10 +311,11 @@ class TestWhitespace:
 # TYPO CORRECTION
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class TestTypoCorrection:
     def test_typo_disabled_by_default(self):
         # Even without a vocab, the default apply_typo=False must not cause an error.
-        # Use "mkaan" (a misspelling of "makan") — not in the slang dict, no repeated chars.
+        # Use "mkaan" (a misspelling of "makan") — not in slang dict, no repeated chars.
         assert normalize("saya mkaan") == "saya mkaan"
 
     def test_typo_opt_in_corrects_word(self):
@@ -331,6 +343,7 @@ class TestTypoCorrection:
 # BATCH PROCESSING
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class TestBatchProcessing:
     def test_list_of_strings(self):
         inputs = ["gw gk ngerti", "lu udh makan??"]
@@ -355,6 +368,7 @@ class TestBatchProcessing:
 # QUICK API
 # ─────────────────────────────────────────────────────────────────────────────
 
+
 class TestQuickApi:
     def test_quick_basic(self):
         assert quick("gw gk ngerti bngt sihhhh!!!") == "saya tidak mengerti banget sih!"
@@ -371,6 +385,7 @@ class TestQuickApi:
 # ─────────────────────────────────────────────────────────────────────────────
 # EDGE CASES
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class TestEdgeCases:
     def test_empty_string(self):
@@ -395,7 +410,6 @@ class TestEdgeCases:
         result = normalize("cek di tokopedia.com")
         assert "tokopedia.com" in result
 
-
     def test_all_flags_false(self):
         # All stages turned off → text is returned as-is (pass-through only)
         raw = "GW GK NGERTI BNT!!!!!"
@@ -413,6 +427,7 @@ class TestEdgeCases:
 # ─────────────────────────────────────────────────────────────────────────────
 # REGRESSION: lowercase=False and normalize_punctuation=False flags
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class TestFlagRegressions:
     """
@@ -500,7 +515,9 @@ class TestFlagRegressions:
 
     def test_lowercase_false_and_punctuation_false_combined(self):
         # Both flags disabled simultaneously
-        result = normalize("GW KESEL BGT!!!", lowercase=False, normalize_punctuation=False)
+        result = normalize(
+            "GW KESEL BGT!!!", lowercase=False, normalize_punctuation=False
+        )
         assert result == "SAYA KESEL BANGET!!!"
 
 
@@ -515,6 +532,7 @@ class TestFlagRegressions:
 # Fix: all slang dictionary *values* are pre-loaded into `typo._protected`
 # at import time.  Words in that whitelist bypass the distance scan entirely.
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class TestTypoSlangInteraction:
     """
@@ -556,11 +574,15 @@ class TestTypoSlangInteraction:
         # the word "nasi" or "makan" in a position that was not in the original.
         typo.add_to_vocab({"saya", "makan", "nasi", "goreng"})
 
-        r1 = normalize("brgnya bgssss bgt gk nyesel bli dsni thx gan!!!", apply_typo=True)
+        r1 = normalize(
+            "brgnya bgssss bgt gk nyesel bli dsni thx gan!!!", apply_typo=True
+        )
         assert "nasi" not in r1, f"'nasi' should not appear in: {r1}"
         assert "terima kasih" in r1
 
-        r2 = normalize("pdhl hrga mhl tp kwalitas jlek kcewa pokonya..", apply_typo=True)
+        r2 = normalize(
+            "pdhl hrga mhl tp kwalitas jlek kcewa pokonya..", apply_typo=True
+        )
         assert "mahal" in r2, f"'mahal' should survive; got: {r2}"
         # "makan" must NOT appear where "mahal" was
         words_r2 = r2.split()
@@ -589,6 +611,7 @@ class TestTypoSlangInteraction:
 # ─────────────────────────────────────────────────────────────────────────────
 # BATCH NORMALIZATION (LIST INPUT)
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class TestBatchNormalization:
     """
@@ -633,5 +656,5 @@ class TestBatchNormalization:
         original = ["gw lagi makan", None, "dia lg tidur"]
         result = normalize(original)
         assert len(result) == len(original)
-        pairs = list(zip(original, result))
-        assert pairs[1] == (None, None)   # sentinel preserved at index 1
+        pairs = list(zip(original, result, strict=False))
+        assert pairs[1] == (None, None)  # sentinel preserved at index 1

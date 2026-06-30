@@ -54,12 +54,10 @@ Notes:
 
 from __future__ import annotations
 
-from typing import Dict, Optional, Set, Tuple
-
-
 # ─────────────────────────────────────────────────────────────────────────────
 # LEVENSHTEIN DISTANCE
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 def levenshtein_distance(s1: str, s2: str) -> int:
     """
@@ -102,8 +100,8 @@ def levenshtein_distance(s1: str, s2: str) -> int:
     for i, c1 in enumerate(s1):
         current_row = [i + 1]
         for j, c2 in enumerate(s2):
-            insertions   = previous_row[j + 1] + 1
-            deletions    = current_row[j] + 1
+            insertions = previous_row[j + 1] + 1
+            deletions = current_row[j] + 1
             substitutions = previous_row[j] + (c1 != c2)
             current_row.append(min(insertions, deletions, substitutions))
         previous_row = current_row
@@ -114,6 +112,7 @@ def levenshtein_distance(s1: str, s2: str) -> int:
 # ─────────────────────────────────────────────────────────────────────────────
 # TYPO CORRECTOR
 # ─────────────────────────────────────────────────────────────────────────────
+
 
 class TypoCorrector:
     """
@@ -154,13 +153,13 @@ class TypoCorrector:
 
     def __init__(
         self,
-        vocab: Optional[Set[str]] = None,
+        vocab: set[str] | None = None,
         min_word_length: int = 4,
         min_confidence: float = 0.5,
     ) -> None:
-        self.vocab: Set[str] = {w.lower() for w in vocab} if vocab else set()
+        self.vocab: set[str] = {w.lower() for w in vocab} if vocab else set()
         self.min_word_length = min_word_length
-        self.min_confidence  = min_confidence
+        self.min_confidence = min_confidence
 
         # ── Protected vocab (whitelist) ───────────────────────────────────────
         # Words in this set are always returned unchanged by correct(), even
@@ -168,7 +167,7 @@ class TypoCorrector:
         # shield all slang-output values (e.g. "mahal", "terima kasih") from
         # being mis-corrected back to a short user vocab like {"nasi", "goreng"}.
         # Managed internally — not exposed as a public vocabulary to the caller.
-        self._protected: Set[str] = set()
+        self._protected: set[str] = set()
 
         # ── Lookup cache ─────────────────────────────────────────────────────
         # Maps lowercased token → corrected word.
@@ -176,11 +175,11 @@ class TypoCorrector:
         # times (e.g. "gk", "bgt", "udh"). Caching avoids recomputing the
         # full vocab scan on every occurrence.
         # The cache is invalidated whenever the vocabulary changes.
-        self._cache: Dict[str, str] = {}
+        self._cache: dict[str, str] = {}
 
         # ── Cache statistics ─────────────────────────────────────────────────
         # Useful for profiling and tuning cache effectiveness.
-        self._cache_hits:   int = 0
+        self._cache_hits: int = 0
         self._cache_misses: int = 0
 
     # ─── Internal ────────────────────────────────────────────────────────────
@@ -193,12 +192,12 @@ class TypoCorrector:
         corrections are not returned for newly added words.
         """
         self._cache.clear()
-        self._cache_hits   = 0
+        self._cache_hits = 0
         self._cache_misses = 0
 
     # ─── Protected vocab management ──────────────────────────────────────────
 
-    def set_protected(self, words: Set[str]) -> None:
+    def set_protected(self, words: set[str]) -> None:
         """
         Replace the internal whitelist with the given word set.
 
@@ -215,15 +214,13 @@ class TypoCorrector:
             >>> corrector.set_protected({"mahal", "terima kasih"})
         """
         self._protected = {
-            token
-            for phrase in words
-            for token in phrase.lower().split()
+            token for phrase in words for token in phrase.lower().split()
         }
         self._invalidate_cache()
 
     # ─── Vocabulary management ───────────────────────────────────────────────
 
-    def add_to_vocab(self, words: Set[str]) -> None:
+    def add_to_vocab(self, words: set[str]) -> None:
         """
         Add words to the vocabulary and invalidate the lookup cache.
 
@@ -236,7 +233,7 @@ class TypoCorrector:
         self.vocab.update(w.lower() for w in words)
         self._invalidate_cache()
 
-    def remove_from_vocab(self, words: Set[str]) -> None:
+    def remove_from_vocab(self, words: set[str]) -> None:
         """
         Remove words from the vocabulary and invalidate the lookup cache.
 
@@ -327,7 +324,7 @@ class TypoCorrector:
         # avoids computing Levenshtein for obviously too-different words,
         # providing a significant speedup for large vocabularies.
         best_match = word
-        min_dist   = float('inf')
+        min_dist = float("inf")
 
         for candidate in self.vocab:
             # Fast pre-filter: if lengths differ by more than max_dist,
@@ -338,7 +335,7 @@ class TypoCorrector:
             dist = levenshtein_distance(word_lower, candidate)
 
             if dist < min_dist and dist <= max_dist:
-                min_dist   = dist
+                min_dist = dist
                 best_match = candidate
 
         # ── Confidence filter ────────────────────────────────────────────────
@@ -348,7 +345,7 @@ class TypoCorrector:
         if best_match != word:
             confidence = 1.0 - (min_dist / max(len(word_lower), 1))
             if confidence < self.min_confidence:
-                best_match = word   # Not confident enough — keep original
+                best_match = word  # Not confident enough — keep original
 
         # Store result in cache before returning
         self._cache[word_lower] = best_match
@@ -380,7 +377,7 @@ class TypoCorrector:
         corrected = [self.correct(w, max_dist) for w in text.split()]
         return " ".join(corrected)
 
-    def suggest(self, word: str, max_dist: int = 2, top_k: int = 3) -> List[str]:
+    def suggest(self, word: str, max_dist: int = 2, top_k: int = 3) -> list[str]:
         """
         Suggest closest vocabulary matches for an unknown word.
 
@@ -417,7 +414,7 @@ class TypoCorrector:
 
     # ─── Diagnostics ─────────────────────────────────────────────────────────
 
-    def cache_info(self) -> Dict[str, int]:
+    def cache_info(self) -> dict[str, int]:
         """
         Return cache hit/miss statistics.
 
@@ -432,9 +429,9 @@ class TypoCorrector:
             {'hits': 120, 'misses': 35, 'size': 35}
         """
         return {
-            "hits":   self._cache_hits,
+            "hits": self._cache_hits,
             "misses": self._cache_misses,
-            "size":   len(self._cache),
+            "size": len(self._cache),
         }
 
     # ─── Dunder helpers ──────────────────────────────────────────────────────
