@@ -1,6 +1,6 @@
 [project]
 name = "basa"
-version = "0.1.0rc0"
+version = "0.1.0rc1"
 description = "Modern NLP for Indonesian and regional languages"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -9,8 +9,6 @@ authors = [
     {name = "Muanai Khalifah Revindo", email = "muanaikhalifahr@gmail.com"}
 ]
 dependencies = [
-    "transformers>=4.30.0",
-    "torch>=2.0.0",
     "pydantic>=2.0.0"
 ]
 
