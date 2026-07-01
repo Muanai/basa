@@ -28,3 +28,19 @@ markdown_extensions:
   - pymdownx.superfences
 nav:
   - Home: index.md
+  - Installation: installation.md
+  - Quick Start: quickstart.md
+  - Guides:
+    - Batch Processing: guides/batch-processing.md
+    - Cleaning Social Media Text: guides/social-media.md
+    - Typo Correction: guides/typo-correction.md
+  - API Reference:
+    - quick(): api/quick.md
+    - normalize(): api/normalize.md
+    - slang: api/slang.md
+    - typo: api/typo.md
+  - Design Philosophy: philosophy.md
+  - FAQ: faq.md
+  - Roadmap: roadmap.md
+  - Changelog: changelog.md
+  - About: about.md
