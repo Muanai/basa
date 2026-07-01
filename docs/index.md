@@ -1,6 +1,4 @@
-# BASA
-
-Modern NLP toolkit for Indonesian and regional languages.
+# BASA: Modern NLP toolkit for Indonesian and regional languages.
 
 BASA helps developers clean and normalize informal Indonesian text with a simple, developer-friendly API.
 

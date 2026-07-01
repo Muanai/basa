@@ -2,6 +2,9 @@ site_name: BASA
 site_url: https://Muanai.github.io/basa/
 theme:
   name: material
+  font:
+    code: Consolas Regular
+    text: DM Sans
   palette:
     - scheme: default
       primary: indigo
@@ -16,15 +19,13 @@ theme:
         icon: material/brightness-4
         name: Switch to light mode
   features:
-    - navigation.tabs
-    - navigation.sections
-    - toc.integrate
     - search.suggest
     - search.highlight
 plugins:
   - search
 markdown_extensions:
-  - pymdownx.highlight
+  - pymdownx.highlight:
+      pygments_lang_class: true
   - pymdownx.superfences
 nav:
   - Home: index.md
@@ -44,3 +45,6 @@ nav:
   - Roadmap: roadmap.md
   - Changelog: changelog.md
   - About: about.md
+
+extra_css:
+  - stylesheets/custom.css
