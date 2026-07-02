@@ -9,7 +9,8 @@ authors = [
     {name = "Muanai Khalifah Revindo", email = "muanaikhalifahr@gmail.com"}
 ]
 dependencies = [
-    "pydantic>=2.0.0"
+    "mkdocs-ask-ai>=1.1.3",
+    "pydantic>=2.0.0",
 ]
 
 [project.optional-dependencies]
