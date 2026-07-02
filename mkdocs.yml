@@ -1,5 +1,7 @@
 site_name: BASA
 site_url: https://Muanai.github.io/basa/
+repo_name: BASA v0.1
+repo_url: https://github.com/Muanai/basa
 theme:
   name: material
   font:
@@ -10,19 +12,25 @@ theme:
       primary: indigo
       accent: indigo
       toggle:
-        icon: material/brightness-7
+        icon: material/weather-sunny
         name: Switch to dark mode
     - scheme: slate
       primary: indigo
       accent: indigo
       toggle:
-        icon: material/brightness-4
+        icon: material/weather-night
         name: Switch to light mode
   features:
     - search.suggest
     - search.highlight
+    - navigation.path
+    - navigation.footer
 plugins:
   - search
+  - ask-ai:
+      ai_menu_button_text: "Copy Page"
+      sections:
+        all: ["*.md", "**/*.md"]
 markdown_extensions:
   - pymdownx.highlight:
       pygments_lang_class: true
@@ -45,6 +53,15 @@ nav:
   - Roadmap: roadmap.md
   - Changelog: changelog.md
   - About: about.md
-
 extra_css:
   - stylesheets/custom.css
+
+copyright: Copyright &copy; 2026 BASA
+extra:
+  social:
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/basa/
+      name: BASA on PyPI
+    - icon: fontawesome/brands/github
+      link: https://github.com/Muanai/basa
+      name: BASA on GitHub
