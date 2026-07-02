@@ -41,6 +41,14 @@ Usage:
     result = slang.normalize("gw gamau pergi krn lg baper bgt")
     # → "saya tidak mau pergi karena sedang bawa perasaan banget"
 
+    # Inspect all supported slang words
+    words = slang.supported_words()
+    # → {"adek": "adik", "ak": "aku", "ane": "saya", ...}
+
+    # Count total entries
+    len(slang)
+    # → 120+
+
     # With custom entries
     from basa.core.slang import SlangNormalizer
     normalizer = SlangNormalizer(custom_mapping={"jancok": "ekspresi"})
@@ -1997,6 +2005,26 @@ class SlangNormalizer:
             A copy of the current {slang: replacement} mapping.
         """
         return self.mapping.copy()
+
+    def supported_words(self) -> dict[str, str]:
+        """
+        Return all supported slang words and their standard replacements.
+
+        Useful for debugging, documentation, or building custom UIs.
+
+        Returns:
+            A copy of the current {slang: standard} mapping, sorted
+            alphabetically by slang key.
+
+        Example:
+            >>> from basa import slang
+            >>> words = slang.supported_words()
+            >>> words["gw"]
+            'saya'
+            >>> len(slang)
+            120
+        """
+        return dict(sorted(self.mapping.items()))
 
     def lookup(self, word: str) -> str | None:
         """
