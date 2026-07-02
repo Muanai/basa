@@ -47,7 +47,7 @@ Usage:
 
     # Count total entries
     len(slang)
-    # → 120+
+    # → 1300+
 
     # With custom entries
     from basa.core.slang import SlangNormalizer

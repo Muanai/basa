@@ -64,6 +64,26 @@ Output:
 
 ---
 
+## Inspecting the Dictionary
+
+You can inspect the supported slang words and their standard replacements, or count the total number of entries:
+
+```python
+# Get all supported words (alphabetically sorted)
+words = slang.supported_words()
+
+print(words["gw"])
+# 'saya'
+print(words["gk"])
+# 'tidak'
+
+# Count total entries
+print(len(slang))
+# 1308
+```
+
+---
+
 ## Adding Custom Entries
 
 Users can extend the dictionary dynamically.

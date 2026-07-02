@@ -8,9 +8,16 @@ The project follows Semantic Versioning (SemVer).
 
 ## [Unreleased]
 
-### Planned
+---
 
-* First stable release (v0.1.0)
+## [0.1.0] - 2026-07-02
+
+First stable release.
+
+### Added
+
+* Added runtime version introspection via `basa.__version__`.
+* Added `slang.supported_words()` and support for `len(slang)` to inspect supported slang mappings.
 
 ---
 
