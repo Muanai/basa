@@ -1,0 +1,1981 @@
+# BASA
+
+# all
+
+## Home
+
+# BASA: Modern NLP toolkit for Indonesian and regional languages.
+
+BASA helps developers clean and normalize informal Indonesian text with a simple, developer-friendly API.
+
+```python
+from basa import quick
+
+quick("GW GKKKK NGERTIII BNGTTTT!!!!!")
+# saya tidak mengerti banget!
+```
+
+## Features
+
+* Indonesian slang normalization
+* Repeated-character reduction (`gkkkk → gk`)
+* Conservative typo correction (opt-in)
+* Batch processing support
+* Pure Python implementation
+* Developer-friendly API
+
+## Installation
+
+```bash
+pip install basa
+```
+
+## Quick Example
+
+```python
+from basa import normalize
+
+normalize(
+    "gw gk ngerti bngtttt sihhhh!!!"
+)
+
+# saya tidak mengerti banget sih!
+```
+
+## Design Philosophy
+
+BASA follows several core principles:
+
+* **Conservative by default** — destructive operations are opt-in.
+* **One-line API** — most users should only need `quick()`.
+* **Indonesian-first** — built specifically for Indonesian NLP workflows.
+* **Future regional support** — designed to grow toward Javanese, Sundanese, and other local languages.
+
+## Roadmap
+
+### v0.1
+
+* `normalize()`
+* `quick()`
+* Slang normalization
+* Typo correction
+* Batch processing
+
+### Future Releases
+
+* Javanese ↔ Indonesian translation
+* Sundanese ↔ Indonesian translation
+* Indonesian factual consistency evaluation
+* Dataset utilities for IndoBERT and IndoBART
+* Synthetic data generation for low-resource languages
+
+## License
+
+Released under the MIT License.
+
+
+## About
+
+# About BASA
+
+## What is BASA?
+
+BASA is an open-source NLP toolkit for Indonesian and regional languages.
+
+The project focuses on building practical, developer-friendly tools for Indonesian text processing, beginning with informal text normalization and gradually expanding toward regional language support, evaluation utilities, and dataset tooling.
+
+The name **BASA** comes from the Indonesian and Javanese word *bahasa*, reflecting the project's long-term vision of supporting Indonesia's linguistic diversity.
+
+---
+
+## Creator
+
+BASA was created by Muanai Khalifah Revindo, an Informatics Engineering student at Universitas Sriwijaya.
+
+His work primarily focuses on:
+
+* Artificial Intelligence
+* Machine Learning
+* Risk Intelligence Systems
+* Operational Analytics
+* Indonesian NLP
+* Low-resource language technologies
+
+BASA represents an effort to build practical open-source infrastructure for Indonesian and regional-language NLP ecosystems.
+
+---
+
+## Why BASA Exists
+
+Many modern NLP tools are designed primarily around English-language workflows.
+
+Indonesian developers often need to solve challenges such as:
+
+* Social media slang normalization
+* Repeated-character reduction
+* Informal text preprocessing
+* Regional language support
+* Low-resource dataset preparation
+
+BASA aims to address these problems through simple APIs, conservative defaults, and strong developer experience.
+
+---
+
+## Design Principles
+
+BASA follows several core principles:
+
+### Conservative by Default
+
+Potentially destructive operations, such as typo correction, are opt-in rather than automatic.
+
+### Indonesian First
+
+The project prioritizes Indonesian NLP problems before expanding to broader multilingual use cases.
+
+### Incremental Growth
+
+Features are introduced gradually, with an emphasis on maintainability, testing, and documentation.
+
+### Developer Experience
+
+Most workflows should require only a few lines of code:
+
+```python
+from basa import quick
+
+quick("gw gk ngerti bngtttt")
+```
+
+---
+
+## Long-Term Vision
+
+The long-term goal of BASA is to become a practical ecosystem for Indonesian and regional-language NLP, including:
+
+* Text normalization
+* Translation utilities
+* Evaluation frameworks
+* Dataset tooling
+* Synthetic data generation
+* Low-resource language support
+
+The project values practical usability and sustainable open-source development over rapid feature expansion.
+
+---
+
+## Open Source
+
+BASA is an open-source project released under the MIT License.
+
+Community contributions, feedback, and collaboration are always welcome.
+
+
+## Changelog
+
+# Changelog
+
+All notable changes to BASA will be documented in this file.
+
+The project follows Semantic Versioning (SemVer).
+
+---
+
+## [Unreleased]
+
+---
+
+## [0.1.0] - 2026-07-02
+
+First stable release.
+
+### Added
+
+* Added runtime version introspection via `basa.__version__`.
+* Added `slang.supported_words()` and support for `len(slang)` to inspect supported slang mappings.
+
+---
+
+## [0.1.0rc1] - 2026-06-30
+
+Release candidate.
+
+### Added
+
+* GitHub Actions CI workflow for automated testing and linting.
+* Ruff configuration for linting and formatting.
+
+### Fixed
+
+* Preserve list length consistency during batch normalization.
+
+---
+
+## [0.1.0rc0] - 2026-06-30
+
+First release candidate.
+
+### Added
+
+* Initial release candidate milestone.
+* Stabilized public API for v0.1.0.
+
+---
+
+## [0.1.0b3] - 2026-06-29
+
+### Added
+
+* Material for MkDocs documentation setup.
+* GitHub Pages deployment workflow.
+* Additional slang dictionary entries for adjectives, verbs, and question forms.
+
+### Changed
+
+* Updated dictionary statistics in the README.
+
+---
+
+## [0.1.0b2] - 2026-06-28
+
+### Added
+
+* Regression tests for typo and slang interactions.
+
+### Fixed
+
+* Prevent slang normalization outputs from being incorrectly modified by the typo corrector.
+
+---
+
+## [0.1.0b1] - 2026-06-26
+
+### Added
+
+* Additional regression tests for the normalization pipeline.
+
+### Fixed
+
+* Respect `lowercase=False`.
+* Respect `normalize_punctuation=False`.
+
+---
+
+## [0.1.0b0] - 2026-06-25
+
+First beta release.
+
+### Added
+
+* Expanded normalization test coverage.
+
+### Changed
+
+* Improved slang normalization pipeline.
+* Expanded slang dictionary coverage.
+
+---
+
+## [0.1.0a4] - 2026-06-24
+
+### Added
+
+* New slang entries across multiple categories.
+* Expanded dictionary coverage to more than 1,600 entries.
+
+### Changed
+
+* Optimized slang dictionary implementation.
+
+---
+
+## [0.1.0a3] - 2026-06-24
+
+### Added
+
+* Additional slang categories and normalization rules.
+
+---
+
+## [0.1.0a2] - 2026-06-24
+
+### Changed
+
+* Internal improvements to normalization components.
+
+---
+
+## [0.1.0a1] - 2026-06-23
+
+### Added
+
+* Improved public API exports.
+* Initial testing infrastructure.
+* Comprehensive project README.
+
+### Changed
+
+* Refined package structure for the first alpha release.
+
+---
+
+## [0.1.0a0] - 2026-06-23
+
+Initial alpha release.
+
+### Added
+
+* Project scaffolding and directory structure.
+* Modern Python packaging using `pyproject.toml` and `uv`.
+* Regex-based slang normalization engine.
+* Character reduction pipeline.
+* Typo correction module with suggestions and caching.
+* Public normalization APIs:
+
+  * `normalize()`
+  * `quick()`
+
+
+## FAQ
+
+# Frequently Asked Questions
+
+## What is BASA?
+
+BASA is an open-source NLP toolkit for Indonesian and regional languages.
+
+The project currently focuses on text normalization, including slang normalization, repeated-character reduction, and conservative typo correction for Indonesian informal text.
+
+---
+
+## Who created BASA?
+
+BASA was created and is maintained by Muanai Khalifah Revindo, an Informatics Engineering student at Universitas Sriwijaya with interests in AI, machine learning, and risk intelligence systems.
+
+Learn more on the About page.
+
+---
+
+## Why is typo correction disabled by default?
+
+Typo correction can unintentionally modify:
+
+* Proper nouns
+* Technical terms
+* Acronyms
+* Domain-specific vocabulary
+
+To avoid destructive transformations, BASA uses conservative defaults and requires users to explicitly enable typo correction.
+
+```python
+from basa import normalize
+
+normalize(
+    text,
+    apply_typo=True
+)
+```
+
+---
+
+## Does BASA support batch processing?
+
+Yes.
+
+BASA supports both individual strings and lists of strings.
+
+```python
+from basa import normalize
+
+texts = [
+    "gw gk ngerti",
+    "udh makan blm?"
+]
+
+normalize(texts)
+```
+
+---
+
+## Does BASA support Javanese?
+
+Not yet.
+
+Javanese support is planned for future releases, including translation utilities between Indonesian and Javanese.
+
+---
+
+## Does BASA support Sundanese?
+
+Not yet.
+
+Support for Sundanese translation and processing tools is part of the long-term roadmap.
+
+---
+
+## Is BASA production-ready?
+
+Version 0.1 establishes the first stable public API.
+
+The project prioritizes:
+
+* Conservative defaults
+* Automated testing
+* Continuous integration
+* Clear documentation
+* Backward compatibility whenever possible
+
+Users are encouraged to evaluate BASA within their own production requirements.
+
+---
+
+## Why build a separate Indonesian NLP toolkit?
+
+Many existing NLP libraries primarily target English-language workflows.
+
+BASA focuses on practical challenges specific to Indonesia, such as:
+
+* Social media slang
+* Informal text normalization
+* Regional languages
+* Indonesian evaluation pipelines
+* Low-resource language development
+
+---
+
+## Is BASA free to use?
+
+Yes.
+
+BASA is released under the MIT License and can be used in personal, academic, and commercial projects.
+
+---
+
+## How can I contribute?
+
+Contributions are welcome.
+
+You can help by:
+
+* Reporting bugs
+* Suggesting new features
+* Improving documentation
+* Expanding slang dictionaries
+* Adding tests
+* Supporting regional language resources
+
+Please open an issue or pull request on GitHub.
+
+
+## Installation
+
+# Installation
+
+## Requirements
+
+BASA supports:
+
+* Python 3.10 or newer
+
+## Install from PyPI
+
+```bash
+pip install basa
+```
+
+## Verify Installation
+
+Open a Python shell and run:
+
+```python
+from basa import quick
+
+quick("gw gk ngerti")
+```
+
+Expected output:
+
+```python
+'saya tidak mengerti'
+```
+
+## Development Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/muanai/basa.git
+cd basa
+```
+
+Install development dependencies using uv:
+
+```bash
+uv sync --extra dev
+```
+
+Run tests:
+
+```bash
+uv run pytest
+```
+
+Run Ruff:
+
+```bash
+uv run ruff check .
+uv run ruff format .
+```
+
+Build the package:
+
+```bash
+uv build
+```
+
+
+## Design Philosophy
+
+# Design Philosophy
+
+BASA is built around a simple principle:
+
+> Conservative defaults, developer-friendly APIs, and practical tools for Indonesian NLP.
+
+The project prioritizes reliability and maintainability over rapid feature expansion.
+
+---
+
+## Conservative by Default
+
+Text normalization can be destructive.
+
+Proper nouns, technical terms, abbreviations, and domain-specific vocabulary should not be modified without explicit user intent.
+
+For this reason:
+
+```python
+normalize(
+    text,
+    apply_typo=False
+)
+```
+
+Typo correction is always opt-in.
+
+---
+
+## One-Line APIs
+
+Most users should not need to read extensive documentation before becoming productive.
+
+The simplest workflow should look like this:
+
+```python
+from basa import quick
+
+quick("gw gk ngerti bngtttt")
+```
+
+BASA aims to provide sensible defaults while still allowing advanced configuration when necessary.
+
+---
+
+## Indonesian First
+
+BASA focuses primarily on Indonesian language processing.
+
+Many global NLP tools are designed for English-first workflows, leaving Indonesian-specific problems underrepresented.
+
+Examples include:
+
+* Social media slang normalization
+* Repeated-character reduction
+* Regional language support
+* Indonesian evaluation pipelines
+
+The project addresses these problems directly.
+
+---
+
+## Regional Language Support
+
+Indonesia has hundreds of local languages, many of which remain underrepresented in modern NLP ecosystems.
+
+Future BASA releases aim to support:
+
+* Javanese
+* Sundanese
+* Additional regional languages
+
+The long-term goal is practical tooling rather than academic benchmarks alone.
+
+---
+
+## Explicit Over Implicit
+
+BASA prefers explicit configuration over hidden behavior.
+
+For example:
+
+```python
+normalize(
+    text,
+    apply_typo=True,
+    lowercase=False
+)
+```
+
+Users should always understand which transformations are being applied to their data.
+
+---
+
+## Stable Public APIs
+
+Breaking changes are introduced cautiously.
+
+The public API is intentionally small:
+
+```python
+from basa import (
+    normalize,
+    quick,
+    slang,
+    typo,
+)
+```
+
+A small API surface is easier to maintain, document, and support over time.
+
+---
+
+## Incremental Growth
+
+BASA follows an incremental development model.
+
+Instead of shipping many unfinished features, the project focuses on:
+
+* Strong testing
+* Good documentation
+* Stable releases
+* Conservative defaults
+* Real-world usability
+
+The objective is not to become the largest NLP framework, but to become a dependable toolkit for Indonesian and regional language processing.
+
+
+## Quick Start
+
+# Quick Start
+
+BASA provides two main entry points:
+
+* `quick()` for zero-configuration usage
+* `normalize()` for fine-grained control
+
+---
+
+## Quick Normalization
+
+The simplest way to clean Indonesian informal text:
+
+```python
+from basa import quick
+
+quick("gw gk ngerti bngtttt sihhhh!!!")
+```
+
+Output:
+
+```python
+'saya tidak mengerti banget sih!'
+```
+
+---
+
+## Fine-Grained Control
+
+Use `normalize()` when you need more control over the pipeline:
+
+```python
+from basa import normalize
+
+normalize(
+    "GW GKKKK NGERTIII BNGTTTT!!!!!",
+    apply_slang=True,
+    apply_typo=False,
+    lowercase=True,
+    normalize_punctuation=True,
+)
+```
+
+Output:
+
+```python
+'saya tidak mengerti banget!'
+```
+
+---
+
+## Batch Processing
+
+BASA supports lists of strings out of the box:
+
+```python
+texts = [
+    "gw gk ngerti",
+    "udh makan blm?"
+]
+
+normalize(texts)
+```
+
+Output:
+
+```python
+[
+    'saya tidak mengerti',
+    'sudah makan belum?'
+]
+```
+
+---
+
+## Preserving Original Casing
+
+Disable automatic lowercasing when case information matters:
+
+```python
+normalize(
+    "Jokowi pergi ke Jakarta",
+    lowercase=False
+)
+```
+
+Output:
+
+```python
+'Jokowi pergi ke Jakarta'
+```
+
+---
+
+## Typo Correction
+
+Typo correction is disabled by default.
+
+Load your vocabulary first:
+
+```python
+from basa import normalize, typo
+
+typo.add_to_vocab({
+    "makan",
+    "minum"
+})
+```
+
+Then enable typo correction:
+
+```python
+normalize(
+    "gw mkan",
+    apply_typo=True
+)
+```
+
+Output:
+
+```python
+'saya makan'
+```
+
+---
+
+## Why Is Typo Correction Opt-In?
+
+Typo correction can accidentally modify:
+
+* technical terms
+* proper nouns
+* abbreviations
+* domain-specific vocabulary
+
+To prevent destructive transformations, BASA keeps typo correction disabled by default.
+
+---
+
+## Next Steps
+
+* Read the API Reference for detailed documentation.
+* Explore the Guides section for practical NLP workflows.
+* Check the Roadmap to see upcoming features.
+
+
+## Roadmap
+
+# Roadmap
+
+BASA is building toward a modern NLP ecosystem for Indonesian and regional languages.
+
+Our philosophy is to ship stable, well-tested features incrementally rather than pursuing rapid expansion without maintenance guarantees.
+
+---
+
+## v0.1 — Text Normalization Foundation
+
+Status: Stable Foundation
+
+Core features:
+
+* `quick()` zero-configuration API
+* `normalize()` configurable normalization pipeline
+* Indonesian slang normalization
+* Repeated-character reduction (`gkkkk → gk`)
+* Conservative typo correction (opt-in)
+* Batch processing support
+* Full documentation with MkDocs
+* Automated CI and testing pipeline
+
+---
+
+## v0.2 — Translation Utilities
+
+Planned features:
+
+* Javanese → Indonesian translation
+* Indonesian → Javanese translation
+* Sundanese → Indonesian translation
+* Indonesian → Sundanese translation
+* Regional language dictionaries
+* Rule-based baseline translators
+
+Goal:
+
+Provide lightweight utilities for low-resource Indonesian regional language processing.
+
+---
+
+## v0.3 — Indonesian NLP Evaluation Tools
+
+Planned features:
+
+* Factual consistency evaluation for Indonesian summarization
+* ROUGE utilities for Indonesian datasets
+* BERTScore integration
+* IndoBART evaluation helpers
+* Explainable evaluation reports
+
+Goal:
+
+Make Indonesian NLP evaluation more accessible and reproducible.
+
+---
+
+## v0.4 — Dataset Utilities
+
+Planned features:
+
+* Dataset loaders
+* Dataset validators
+* Train/validation/test split helpers
+* IndoBERT preprocessing utilities
+* IndoBART preprocessing pipelines
+
+Goal:
+
+Reduce boilerplate for Indonesian NLP experiments and research projects.
+
+---
+
+## v0.5 — Low-Resource Language Support
+
+Planned features:
+
+* Synthetic data generation tools
+* Augmentation pipelines
+* Dictionary expansion utilities
+* Data quality checks
+* Support for additional Indonesian regional languages
+
+Goal:
+
+Lower the barrier to building NLP systems for underrepresented local languages.
+
+---
+
+## Long-Term Vision
+
+BASA aims to become a practical NLP toolkit for:
+
+* Indonesian text normalization
+* Regional language processing
+* Evaluation and benchmarking
+* Dataset preparation
+* Low-resource language development
+
+The project prioritizes:
+
+* Developer experience
+* Conservative defaults
+* Production-friendly APIs
+* Strong documentation
+* Incremental and maintainable growth
+
+
+## normalize()
+
+# normalize()
+
+The primary normalization API in BASA.
+
+`normalize()` provides fine-grained control over the entire normalization pipeline, including slang conversion, typo correction, punctuation reduction, and case handling.
+
+---
+
+## Import
+
+```python
+from basa import normalize
+```
+
+---
+
+## Basic Usage
+
+```python
+normalize(
+    "GW GKKKK NGERTIII BNGTTTT!!!!!"
+)
+```
+
+Output:
+
+```python
+'saya tidak mengerti banget!'
+```
+
+---
+
+## Function Signature
+
+```python
+normalize(
+    text,
+    apply_slang=True,
+    apply_typo=False,
+    lowercase=True,
+    normalize_punctuation=True,
+    normalize_whitespace=True,
+)
+```
+
+---
+
+## Parameters
+
+### `text`
+
+Type:
+
+```python
+str | list[str]
+```
+
+The input text or batch of texts to normalize.
+
+---
+
+### `apply_slang`
+
+Default:
+
+```python
+True
+```
+
+Applies:
+
+* slang dictionary replacement
+* repeated-character reduction
+
+Example:
+
+```python
+normalize(
+    "gw gk ngerti",
+    apply_slang=False
+)
+```
+
+Output:
+
+```python
+'gw gk ngerti'
+```
+
+---
+
+### `apply_typo`
+
+Default:
+
+```python
+False
+```
+
+Enables Levenshtein-based typo correction.
+
+A vocabulary must be loaded beforehand:
+
+```python
+from basa import typo
+
+typo.add_to_vocab({
+    "makan",
+    "minum"
+})
+```
+
+---
+
+### `lowercase`
+
+Default:
+
+```python
+True
+```
+
+Convert text to lowercase before normalization.
+
+Example:
+
+```python
+normalize(
+    "Jokowi pergi ke Jakarta",
+    lowercase=False
+)
+```
+
+Output:
+
+```python
+'Jokowi pergi ke Jakarta'
+```
+
+---
+
+### `normalize_punctuation`
+
+Default:
+
+```python
+True
+```
+
+Collapses repeated punctuation:
+
+```text
+!!!!! → !
+????? → ?
+..... → .
+```
+
+---
+
+### `normalize_whitespace`
+
+Default:
+
+```python
+True
+```
+
+Collapses multiple spaces and trims leading/trailing whitespace.
+
+---
+
+## Batch Processing
+
+```python
+normalize([
+    "gw gk ngerti",
+    "udh makan blm?"
+])
+```
+
+Output:
+
+```python
+[
+    'saya tidak mengerti',
+    'sudah makan belum?'
+]
+```
+
+---
+
+## Design Philosophy
+
+`normalize()` follows several principles:
+
+* Conservative defaults
+* Explicit configuration
+* Predictable behavior
+* Stable public APIs
+* Production-friendly preprocessing
+
+For most users, `quick()` is recommended as the simpler entry point.
+
+
+## quick()
+
+# quick()
+
+Zero-configuration text normalization.
+
+`quick()` is the simplest way to use BASA and is recommended for most users.
+
+Internally, it is a thin wrapper around `normalize()` with all default settings enabled.
+
+---
+
+## Import
+
+```python
+from basa import quick
+```
+
+---
+
+## Basic Usage
+
+```python
+quick(
+    "gw gk ngerti bngtttt sihhhh!!!"
+)
+```
+
+Output:
+
+```python
+'saya tidak mengerti banget sih!'
+```
+
+---
+
+## Function Signature
+
+```python
+quick(text)
+```
+
+---
+
+## Supported Inputs
+
+### Single String
+
+```python
+quick(
+    "udh makan blm?"
+)
+```
+
+Output:
+
+```python
+'sudah makan belum?'
+```
+
+---
+
+### Batch Processing
+
+```python
+quick([
+    "gw gk ngerti",
+    "otw kampus"
+])
+```
+
+Output:
+
+```python
+[
+    'saya tidak mengerti',
+    'dalam perjalanan kampus'
+]
+```
+
+---
+
+## Default Behavior
+
+`quick()` always uses:
+
+```python
+normalize(
+    text,
+    apply_slang=True,
+    apply_typo=False,
+    lowercase=True,
+    normalize_punctuation=True,
+    normalize_whitespace=True,
+)
+```
+
+---
+
+## When Should I Use `quick()`?
+
+Use `quick()` when:
+
+* Cleaning social media text
+* Building quick NLP prototypes
+* Working with Indonesian informal language
+* You do not need custom normalization settings
+
+For advanced use cases, use `normalize()` directly.
+
+---
+
+## Design Philosophy
+
+The goal of `quick()` is simple:
+
+> Most users should only need one line of code.
+
+```python
+from basa import quick
+
+quick(text)
+```
+
+
+## slang
+
+# slang
+
+Indonesian slang normalization engine.
+
+The `slang` object powers BASA's informal text preprocessing, including slang replacement and repeated-character reduction.
+
+---
+
+## Import
+
+```python
+from basa import slang
+```
+
+---
+
+## Basic Usage
+
+```python
+slang.normalize(
+    "gw gkkkk ngerti bngtttt"
+)
+```
+
+Output:
+
+```python
+'saya tidak mengerti banget'
+```
+
+---
+
+## Character Reduction
+
+Repeated characters are automatically simplified.
+
+```python
+slang.normalize(
+    "sihhhhhhh"
+)
+```
+
+Output:
+
+```python
+'sih'
+```
+
+---
+
+## Dictionary-Based Replacement
+
+```python
+slang.normalize(
+    "udh makan blm?"
+)
+```
+
+Output:
+
+```python
+'sudah makan belum?'
+```
+
+---
+
+## Inspecting the Dictionary
+
+You can inspect the supported slang words and their standard replacements, or count the total number of entries:
+
+```python
+# Get all supported words (alphabetically sorted)
+words = slang.supported_words()
+
+print(words["gw"])
+# 'saya'
+print(words["gk"])
+# 'tidak'
+
+# Count total entries
+print(len(slang))
+# 1308
+```
+
+---
+
+## Adding Custom Entries
+
+Users can extend the dictionary dynamically.
+
+```python
+slang.add({
+    "wfo": "work from office",
+    "wfh": "work from home"
+})
+```
+
+Example:
+
+```python
+slang.normalize(
+    "hari ini wfh"
+)
+```
+
+Output:
+
+```python
+'hari ini work from home'
+```
+
+---
+
+## Dictionary Coverage
+
+BASA currently provides:
+
+* General conversation slang
+* Social media abbreviations
+* Internet expressions
+* Common Indonesian informal forms
+
+Future releases may include:
+
+* Javanese slang
+* Sundanese slang
+* Regional dictionaries
+* Domain-specific vocabularies
+
+---
+
+## Design Philosophy
+
+The slang engine prioritizes:
+
+* Conservative replacements
+* Explicit mappings
+* Fast regex-based processing
+* Developer extensibility
+* Indonesian-first normalization
+
+
+## typo
+
+# typo
+
+Conservative typo correction engine.
+
+The `typo` object provides Levenshtein-based spelling correction with explicit vocabulary management.
+
+Unlike many text normalization systems, BASA requires users to opt in to typo correction.
+
+---
+
+## Import
+
+```python
+from basa import typo
+```
+
+---
+
+## Loading a Vocabulary
+
+Before using typo correction, add words to the vocabulary.
+
+```python
+typo.add_to_vocab({
+    "makan",
+    "minum",
+    "berangkat"
+})
+```
+
+---
+
+## Correcting Individual Words
+
+```python
+typo.correct(
+    "mkan"
+)
+```
+
+Output:
+
+```python
+'makan'
+```
+
+---
+
+## Correcting Sentences
+
+```python
+typo.correct_text(
+    "saya mkan dulu"
+)
+```
+
+Output:
+
+```python
+'saya makan dulu'
+```
+
+---
+
+## Custom Maximum Distance
+
+```python
+typo.correct(
+    "mkan",
+    max_dist=2
+)
+```
+
+The default behavior is intentionally conservative to avoid overcorrection.
+
+---
+
+## Protected Vocabulary
+
+BASA automatically protects normalized slang outputs from typo correction.
+
+Example:
+
+```text
+gk
+↓
+tidak
+```
+
+The word `"tidak"` is never treated as a typo candidate, preventing interactions between normalization stages.
+
+---
+
+## Vocabulary Management
+
+Add new words:
+
+```python
+typo.add_to_vocab({
+    "tensorflow",
+    "lightgbm",
+    "xgboost"
+})
+```
+
+This is particularly useful for:
+
+* Technical datasets
+* Financial documents
+* Domain-specific NLP pipelines
+
+---
+
+## Design Philosophy
+
+The typo engine follows several principles:
+
+* Explicit user control
+* Conservative corrections
+* Domain adaptability
+* Predictable behavior
+* Minimal surprises
+
+The long-term roadmap includes:
+
+* Frequency-based ranking
+* BK-tree acceleration
+* Context-aware corrections
+* Regional language support
+
+
+## Batch Processing
+
+# Batch Processing
+
+BASA supports batch processing out of the box.
+
+Simply pass a list of strings to `normalize()` or `quick()`.
+
+---
+
+## Basic Example
+
+```python
+from basa import normalize
+
+texts = [
+    "gw gk ngerti",
+    "udh makan blm?",
+    "otw ke kampus"
+]
+
+normalize(texts)
+```
+
+Output:
+
+```python
+[
+    "saya tidak mengerti",
+    "sudah makan belum?",
+    "dalam perjalanan ke kampus"
+]
+```
+
+---
+
+## Using `quick()`
+
+The `quick()` API also supports batch inputs.
+
+```python
+from basa import quick
+
+quick([
+    "gw bngtt capek",
+    "dia lg dimana?"
+])
+```
+
+Output:
+
+```python
+[
+    "saya banget capek",
+    "dia lagi dimana?"
+]
+```
+
+---
+
+## Processing Pandas DataFrames
+
+BASA works naturally with pandas.
+
+```python
+import pandas as pd
+
+from basa import normalize
+
+df = pd.DataFrame({
+    "tweet": [
+        "gw gk ngerti",
+        "udh makan blm?"
+    ]
+})
+
+df["clean_text"] = normalize(
+    df["tweet"].tolist()
+)
+```
+
+---
+
+## Processing Large Datasets
+
+For larger datasets, process data in batches instead of loading everything into memory at once.
+
+```python
+BATCH_SIZE = 1000
+
+for i in range(0, len(texts), BATCH_SIZE):
+    batch = texts[i:i + BATCH_SIZE]
+
+    cleaned = normalize(batch)
+
+    # save or process results
+```
+
+---
+
+## Design Notes
+
+Batch processing in BASA guarantees:
+
+* Input order is preserved.
+* Output length matches input length.
+* Empty strings remain unchanged.
+* Invalid values are safely ignored by the normalization pipeline.
+
+These guarantees help make BASA predictable in production preprocessing workflows.
+
+
+## Cleaning Social Media Text
+
+# Cleaning Indonesian Social Media Text
+
+Indonesian social media text often contains:
+
+* Slang words
+* Character elongation (`gkkkk`, `bangetttt`)
+* Informal abbreviations
+* Repeated punctuation
+
+BASA is designed specifically to handle these patterns.
+
+---
+
+## Basic Example
+
+```python
+from basa import quick
+
+quick(
+    "GW GKKKK NGERTIII BNGTTTT!!!!!"
+)
+```
+
+Output:
+
+```python
+"saya tidak mengerti banget!"
+```
+
+---
+
+## Common Transformations
+
+| Original | Normalized       |
+| -------- | ---------------- |
+| gw       | saya             |
+| gk       | tidak            |
+| udh      | sudah            |
+| bgt      | banget           |
+| otw      | dalam perjalanan |
+| makasih  | terima kasih     |
+
+---
+
+## Character Reduction
+
+Repeated characters are automatically normalized.
+
+```python
+quick(
+    "sihhhhhhh"
+)
+```
+
+Output:
+
+```python
+"sih"
+```
+
+Another example:
+
+```python
+quick(
+    "gkkkk"
+)
+```
+
+Output:
+
+```python
+"tidak"
+```
+
+---
+
+## Punctuation Normalization
+
+Repeated punctuation is also simplified.
+
+```python
+quick(
+    "serius??????"
+)
+```
+
+Output:
+
+```python
+"serius?"
+```
+
+---
+
+## Cleaning Twitter or Instagram Data
+
+```python
+tweets = [
+    "gw gk ngerti bngtttt",
+    "udh makan blm????",
+    "otw kampus nihhhh"
+]
+
+cleaned = quick(tweets)
+```
+
+Output:
+
+```python
+[
+    "saya tidak mengerti banget",
+    "sudah makan belum?",
+    "dalam perjalanan kampus nih"
+]
+```
+
+---
+
+## Why Social Media Normalization Matters
+
+Many Indonesian NLP models are trained on formal text.
+
+Social media data introduces challenges such as:
+
+* Informal abbreviations
+* Non-standard spelling
+* Character elongation
+* Regional expressions
+
+Normalization can improve:
+
+* Text classification
+* Sentiment analysis
+* Topic modeling
+* Named entity recognition
+* Summarization pipelines
+
+BASA provides lightweight preprocessing utilities specifically for these Indonesian-language scenarios.
+
+
+## Typo Correction
+
+# Typo Correction
+
+BASA provides conservative typo correction based on Levenshtein distance.
+
+Unlike many normalization systems, typo correction is disabled by default.
+
+```python
+from basa import normalize
+
+normalize(
+    "gw mkan",
+    apply_typo=False
+)
+```
+
+Output:
+
+```python
+"saya mkan"
+```
+
+---
+
+## Why Is Typo Correction Opt-In?
+
+Automatic typo correction can damage:
+
+* Proper nouns
+* Technical terms
+* Acronyms
+* Domain-specific vocabulary
+
+For example:
+
+```text
+xgboost
+lightgbm
+tensorflow
+jokowi
+telkomsel
+```
+
+To avoid destructive behavior, BASA requires explicit user consent before applying typo correction.
+
+---
+
+## Loading a Vocabulary
+
+Before enabling typo correction, add words to the vocabulary.
+
+```python
+from basa import typo
+
+typo.add_to_vocab({
+    "makan",
+    "minum",
+    "berangkat"
+})
+```
+
+---
+
+## Correcting Individual Words
+
+```python
+typo.correct("mkan")
+```
+
+Output:
+
+```python
+"makan"
+```
+
+---
+
+## Correcting Full Sentences
+
+```python
+from basa import normalize
+
+normalize(
+    "gw mkan dulu",
+    apply_typo=True
+)
+```
+
+Output:
+
+```python
+"saya makan dulu"
+```
+
+---
+
+## Custom Maximum Distance
+
+The typo engine uses Levenshtein distance.
+
+By default, the maximum correction distance is conservative.
+
+You can also use the lower-level API directly:
+
+```python
+typo.correct(
+    "mkan",
+    max_dist=2
+)
+```
+
+---
+
+## Protected Vocabulary
+
+BASA automatically protects normalized slang outputs from being modified by the typo corrector.
+
+For example:
+
+```python
+"gk"
+→ "tidak"
+```
+
+The word `"tidak"` will never be reinterpreted as a typo candidate.
+
+This prevents interactions between the slang and typo pipelines from producing incorrect results.
+
+---
+
+## Recommended Workflow
+
+For most use cases, `quick()` is the recommended entry point:
+
+```python
+from basa import quick
+
+quick("gw gk ngerti bngtttt")
+```
+
+This approach provides safe, zero-configuration normalization for informal Indonesian text.
+
+---
+
+For domain-specific datasets, load your own vocabulary before enabling typo correction:
+
+```python
+from basa import normalize, typo
+
+typo.add_to_vocab({
+    "xgboost",
+    "lightgbm",
+    "tensorflow",
+    "fintech",
+    "telkomsel",
+})
+
+normalize(
+    "gw belajar xgboosst",
+    apply_typo=True,
+)
+```
+
+Adding domain-specific terms helps reduce unintended corrections and gives you more control over the normalization pipeline.
+
+---
+
+## Best Practices
+
+When using typo correction, we recommend:
+
+* Load a vocabulary that matches your domain.
+* Keep `apply_typo=False` unless spelling correction is required.
+* Add technical terms, company names, and acronyms to the vocabulary.
+* Review normalization outputs before using them in production workflows.
+
+BASA intentionally favors conservative behavior over aggressive correction.
+
+---
+
+## Future Directions
+
+Potential areas for future development include:
+
+* Frequency-based candidate ranking
+* Optional domain-specific dictionaries
+* Faster search structures for large vocabularies
+* Context-aware correction mechanisms
+* Support for regional languages
+
+These ideas are exploratory and may evolve as BASA grows and receives community feedback.
+
+The current implementation prioritizes simplicity, transparency, and predictable behavior.
