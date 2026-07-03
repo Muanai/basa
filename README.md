@@ -1,5 +1,11 @@
 # BASA
 
+[![PyPI version](https://img.shields.io/pypi/v/basa.svg)](https://pypi.org/project/basa/) 
+[![Python](https://img.shields.io/pypi/pyversions/basa)](https://pypi.org/project/basa/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) 
+[![CI](https://github.com/Muanai/basa/actions/workflows/ci.yml/badge.svg)](https://github.com/Muanai/basa/actions/workflows/ci.yml) 
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://muanai.github.io/basa/) 
+
 **Modern NLP preprocessing for Indonesian and regional languages.**
 
 BASA is a lightweight, zero-dependency preprocessing library designed for real-world Indonesian text — the kind found on Twitter/X, TikTok, WhatsApp, Shopee reviews, and Discord. It normalizes informal slang, collapses expressive character repetition, reduces punctuation noise, and optionally corrects typos, all through a single clean API.
