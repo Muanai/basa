@@ -1,17 +1,74 @@
 [project]
 name = "basa"
 version = "0.1.0"
-description = "Modern NLP for Indonesian and regional languages"
+description = "Modern NLP preprocessing for Indonesian and regional languages — normalizes slang, abbreviations, and noisy social media text."
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
     {name = "Muanai Khalifah Revindo", email = "muanaikhalifahr@gmail.com"}
 ]
+keywords = [
+    "nlp",
+    "indonesian",
+    "bahasa",
+    "text-preprocessing",
+    "text-normalization",
+    "tokenization",
+    "slang",
+    "social-media",
+    "natural-language-processing",
+    "bahasa-indonesia",
+    "malay",
+    "regional-languages",
+]
+classifiers = [
+    # Development Status
+    "Development Status :: 3 - Alpha",
+
+    # Intended Audience
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Intended Audience :: Information Technology",
+
+    # Topic
+    "Topic :: Text Processing :: Linguistic",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+
+    # License
+    "License :: OSI Approved :: MIT License",
+
+    # Programming Language — these generate PyPI version badges
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+
+    # Operating System
+    "Operating System :: OS Independent",
+
+    # Natural Language
+    "Natural Language :: Indonesian",
+
+    # Typing
+    "Typing :: Typed",
+]
 dependencies = [
     "mkdocs-ask-ai>=1.1.3",
     "pydantic>=2.0.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Muanai/basa"
+Documentation = "https://muanai.github.io/basa"
+Repository = "https://github.com/Muanai/basa"
+Issues = "https://github.com/Muanai/basa/issues"
+Changelog = "https://github.com/Muanai/basa/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 serving = [
