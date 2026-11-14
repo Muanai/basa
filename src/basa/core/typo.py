@@ -54,6 +54,8 @@ Notes:
 
 from __future__ import annotations
 
+from collections.abc import Iterable
+
 # ─────────────────────────────────────────────────────────────────────────────
 # LEVENSHTEIN DISTANCE
 # ─────────────────────────────────────────────────────────────────────────────
@@ -95,10 +97,10 @@ def levenshtein_distance(s1: str, s2: str) -> int:
     if len(s2) == 0:
         return len(s1)
 
-    previous_row = range(len(s2) + 1)
+    previous_row: list[int] = list(range(len(s2) + 1))
 
     for i, c1 in enumerate(s1):
-        current_row = [i + 1]
+        current_row: list[int] = [i + 1]
         for j, c2 in enumerate(s2):
             insertions = previous_row[j + 1] + 1
             deletions = current_row[j] + 1
@@ -197,9 +199,9 @@ class TypoCorrector:
 
     # ─── Protected vocab management ──────────────────────────────────────────
 
-    def set_protected(self, words: set[str]) -> None:
+    def set_protected(self, words: Iterable[str]) -> None:
         """
-        Replace the internal whitelist with the given word set.
+        Replace the internal whitelist with the given words.
 
         Words in the protected set are always returned as-is by correct(),
         bypassing both the Levenshtein scan and the confidence filter.
@@ -207,7 +209,7 @@ class TypoCorrector:
         accidental re-correction.
 
         Args:
-            words: Set of lowercase words to protect (multi-word values are
+            words: Iterable of words to protect (multi-word values are
                    split on whitespace so each token is protected individually).
 
         Example:
