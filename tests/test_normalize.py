@@ -6,9 +6,14 @@ The global singleton state ``typo`` is managed via a fixture so that tests
 do not interfere with each other.
 """
 
+import ast
+from pathlib import Path
+
 import pytest
 
+import basa
 from basa import normalize, quick, typo
+from basa.core.slang import SlangNormalizer
 
 # ─────────────────────────────────────────────────────────────────────────────
 # FIXTURES
@@ -658,3 +663,91 @@ class TestBatchNormalization:
         assert len(result) == len(original)
         pairs = list(zip(original, result, strict=False))
         assert pairs[1] == (None, None)  # sentinel preserved at index 1
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# V0.1.1 GUARDRAILS & DICTIONARY INTEGRITY
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+class TestV011GuardrailsAndDeduplication:
+    """Tests for v0.1.1 entity masking, Step 3 isolation, and dictionary hygiene."""
+
+    def test_atomic_entity_preservation_urls_emails_handles(self):
+        assert (
+            normalize("Portal resmi dapat diakses melalui www.indonesia.go.id.")
+            == "portal resmi dapat diakses melalui www.indonesia.go.id."
+        )
+        assert (
+            normalize("Kunjungi https://www.basa.id/w/gw sekarang")
+            == "kunjungi https://www.basa.id/w/gw sekarang"
+        )
+        assert (
+            normalize("Hubungi admin@www.co.id atau @www_user #www")
+            == "hubungi admin@www.co.id atau @www_user #www"
+        )
+
+    def test_standard_collocation_and_english_loanword_preservation(self):
+        assert (
+            normalize(
+                "Pengaturan load balancer mendistribusikan lalu lintas secara merata."
+            )
+            == "pengaturan load balancer mendistribusikan lalu lintas secara merata."
+        )
+        assert (
+            normalize(
+                "Kami menjadwalkan meeting sebelum deadline untuk migrasi database."
+            )
+            == "kami menjadwalkan meeting sebelum deadline untuk migrasi database."
+        )
+        assert (
+            normalize(
+                "Konfirmasi dikirim melalui email karena barang reject rusak parah."
+            )
+            == "konfirmasi dikirim melalui email karena barang reject rusak parah."
+        )
+        assert (
+            normalize("Packing nya hancur dan leluconnya gila.")
+            == "packing nya hancur dan leluconnya gila."
+        )
+
+    def test_step1_output_not_reexpanded_in_step3(self):
+        normalizer = SlangNormalizer(custom_mapping={"kuy": "yuk", "yuk": "ayo"})
+        assert normalizer.normalize("kuy berangkat") == "yuk berangkat"
+        assert normalizer.normalize("kuyyyy berangkat") == "yuk berangkat"
+
+    def test_duplicate_key_resolution(self):
+        assert (
+            normalize("Barang dikirim dr Surabaya.") == "barang dikirim dari surabaya."
+        )
+        assert normalize("gw dah makan") == "saya sudah makan"
+        assert normalize("lo pergi") == "kamu pergi"
+        assert normalize("minum kpi pagi") == "minum kopi pagi"
+        assert normalize("ini nih") == "ini nih"
+
+    def test_slang_category_dicts_have_no_duplicate_keys(self):
+        slang_path = (
+            Path(__file__).resolve().parents[1] / "src" / "basa" / "core" / "slang.py"
+        )
+        tree = ast.parse(slang_path.read_text(encoding="utf-8"))
+        seen: dict[str, str] = {}
+        duplicates: list[tuple[str, str, str]] = []
+        for node in tree.body:
+            if (
+                isinstance(node, ast.AnnAssign)
+                and isinstance(node.target, ast.Name)
+                and isinstance(node.value, ast.Dict)
+            ):
+                dict_name = node.target.id
+                for key_node in node.value.keys:
+                    if isinstance(key_node, ast.Constant) and isinstance(
+                        key_node.value, str
+                    ):
+                        key = key_node.value
+                        if key in seen:
+                            duplicates.append((key, seen[key], dict_name))
+                        seen[key] = dict_name
+        assert duplicates == []
+
+    def test_version_is_0_1_1(self):
+        assert basa.__version__ == "0.1.1"

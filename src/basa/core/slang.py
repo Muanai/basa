@@ -225,7 +225,6 @@ _CONJUNCTIONS: dict[str, str] = {
     "dgn": "dengan",
     "dg": "dengan",
     "jg": "juga",
-    "bkn": "bukan",
     "pd": "pada",
     "dlm": "dalam",
     # Formal abbreviations
@@ -246,7 +245,6 @@ _CONJUNCTIONS: dict[str, str] = {
     "srt": "serta",
     "kmdian": "kemudian",
     "kmdn": "kemudian",
-    "lalu": "kemudian",
     # Formal/business abbreviations
     "ttd": "tanda tangan",
     "an": "atas nama",
@@ -400,7 +398,6 @@ _ADJECTIVES_ADVERBS: dict[str, str] = {
     "syang": "sayang",
     "sayng": "sayang",
     # Common informal particles mapped to nearest standard equivalent
-    "nih": "ini",
     "tuh": "itu",
     "ntu": "itu",
     "yok": "ayo",
@@ -606,7 +603,6 @@ _GREETINGS_RESPONSES: dict[str, str] = {
     "slmt dtng": "selamat datang",
     "smpai jumpa": "sampai jumpa",
     "dadah": "sampai jumpa",
-    "dah": "sampai jumpa",
     "bye": "selamat tinggal",
     "byee": "selamat tinggal",
     "byebye": "selamat tinggal",
@@ -674,7 +670,6 @@ _INTERNET_SLANG: dict[str, str] = {
     "imho": "menurut saya",
     "cmiiw": "koreksi jika saya salah",
     "lol": "tertawa",
-    "wkwk": "tertawa",
     "wkwwk": "tertawa",
     "wkwkwk": "tertawa",
     "awokwok": "tertawa",
@@ -712,13 +707,6 @@ _INTERNET_SLANG: dict[str, str] = {
     "bc": "pesan siaran",
     "nohp": "nomor handphone",
     "ootd": "pakaian hari ini",
-    "vibe": "suasana",
-    "vibes": "suasana",
-    "mood": "suasana hati",
-    "hype": "heboh",
-    "trending": "sedang tren",
-    "lowkey": "diam-diam",
-    "highkey": "terang-terangan",
 }
 
 # E-commerce and finance terms
@@ -770,17 +758,10 @@ _YOUTH_SLANG: dict[str, str] = {
     "bucin": "budak cinta",
     "julid": "iri hati",
     "halu": "halusinasi",
-    "flexing": "pamer",
     "pansos": "panjat sosial",
     "curhat": "berbagi cerita",
     "kekinian": "tren terkini",
     "kekinan": "tren terkini",
-    "hits": "populer",
-    "relate": "relatable",
-    "selfie": "foto sendiri",
-    "caption": "keterangan foto",
-    "story": "cerita",
-    "feeds": "beranda",
 }
 
 # Discourse markers and meta-commentary
@@ -851,7 +832,6 @@ _SUNDANESE_EXTENDED: dict[str, str] = {
     "euy": "ya",
     "mah": "sih",
     "teh": "itu",
-    "nya": "ya",
     # Adjectives
     "alus": "bagus",
     "awon": "jelek",
@@ -919,7 +899,6 @@ _NOUNS: dict[str, str] = {
     "mtr": "motor",
     "mbl": "mobil",
     "rmh": "rumah",
-    "mkn": "makan",
     "mnum": "minum",
     # Places
     "wrg": "warung",
@@ -950,7 +929,6 @@ _HEALTH: dict[str, str] = {
     # Medical personnel & places
     "obt": "obat",
     "dkter": "dokter",
-    "dr": "dokter",
     "prwt": "perawat",
     "rwt": "rawat",
     "opname": "rawat inap",
@@ -960,23 +938,18 @@ _HEALTH: dict[str, str] = {
     "apotk": "apotek",
     "resep": "resep dokter",
     "rsep": "resep dokter",
-    "rapid test": "tes cepat",
     # Wellness & fitness
     "jalan2": "jalan-jalan",
     "olrga": "olahraga",
-    "gym": "olahraga",
     "lari": "berlari",
-    "jogging": "joging",
     "tdr": "tidur",
     "tdrsiang": "tidur siang",
     "bgdng": "begadang",
     "istrhat": "istirahat",
     "istrht": "istirahat",
     "shat": "sehat",
-    "smbh": "sembuh",
     "lekas sembuh": "lekas sembuh",
     "cpt smbh": "lekas sembuh",
-    "get well soon": "lekas sembuh",
     "gws": "lekas sembuh",
     "isoman": "isolasi mandiri",
 }
@@ -984,8 +957,6 @@ _HEALTH: dict[str, str] = {
 # Emotions, feelings & expressions
 _EMOTIONS_EXPRESSIONS: dict[str, str] = {
     # Happiness / excitement
-    "happy": "bahagia",
-    "excited": "bersemangat",
     "semngt": "semangat",
     "smngat": "semangat",
     "smgt": "semangat",
@@ -996,17 +967,13 @@ _EMOTIONS_EXPRESSIONS: dict[str, str] = {
     "asoy": "asyik",
     "krn2": "keren-keren",
     "mantab": "mantap",
-    "yoi": "iya",
     "gokil": "luar biasa",
-    "gila": "luar biasa",
     "gile": "luar biasa",
     "gilak": "luar biasa",
-    "parah": "luar biasa",
     "lebay": "berlebihan",
     "lbay": "berlebihan",
     # Sadness / disappointment
     "sdh2": "sedih",
-    "kcewa": "kecewa",
     "kzl": "kesal",
     "bete": "kesal",
     "bt": "kesal",
@@ -1022,16 +989,10 @@ _EMOTIONS_EXPRESSIONS: dict[str, str] = {
     "geregetan": "kesal",
     "gereget": "kesal",
     "dongkol": "kesal",
-    "badmood": "suasana hati buruk",
-    "bad mood": "suasana hati buruk",
-    "overthink": "terlalu banyak pikiran",
     "otk": "terlalu banyak pikiran",
-    "down": "sedang terpuruk",
     "ngedown": "sedang terpuruk",
-    "insecure": "tidak percaya diri",
     "minder": "rendah diri",
     # Surprise / shock
-    "shock": "syok",
     "bnggong": "bengong",
     "melongo": "terpana",
     "bnggung": "bingung",
@@ -1042,16 +1003,10 @@ _EMOTIONS_EXPRESSIONS: dict[str, str] = {
     "cintrong": "cinta",
     "gebetan2": "gebetan-gebetan",
     "pdkt": "pendekatan",
-    "chat": "pesan",
     "dm2": "kirim pesan langsung",
-    "ghosting": "menghilang tiba-tiba",
-    "ghosted": "ditinggal tiba-tiba",
-    "friendzone": "zona teman",
     "fz": "zona teman",
-    "crush": "orang yang disukai",
     "clbk": "cinta lama bersemi kembali",
     "php": "pemberi harapan palsu",
-    "playing": "mempermainkan",
     "dimainin": "dipermainkan",
     "selingkuh": "berselingkuh",
     "selingkuhi": "berselingkuhi",
@@ -1063,12 +1018,9 @@ _EMOTIONS_EXPRESSIONS: dict[str, str] = {
     "capai": "lelah",
     "kecapean": "kelelahan",
     "nganggur": "tidak bekerja",
-    "males": "malas",
-    "mager": "malas bergerak",
     "rebahan": "berbaring santai",
     "santey": "santai",
     "ndak": "tidak",
-    "enggak": "tidak",
     "nyesel": "menyesal",
     "ngsyel": "menyesal",
 }
@@ -1076,7 +1028,6 @@ _EMOTIONS_EXPRESSIONS: dict[str, str] = {
 # Food & drink vocabulary
 _FOOD_DRINK: dict[str, str] = {
     # General food terms
-    "mkan": "makan",
     "mkanan": "makanan",
     "lauk": "lauk-pauk",
     "ns": "nasi",
@@ -1101,21 +1052,17 @@ _FOOD_DRINK: dict[str, str] = {
     "gado2": "gado-gado",
     "blr": "bubur",
     "nsuduk": "nasi uduk",
-    "warteg": "warung tegal",
     "wrtg": "warung tegal",
     # Drinks
-    "mnum": "minum",
     "mnuman": "minuman",
     "kpi": "kopi",
     "tehmanis": "teh manis",
     "juice": "jus",
-    "bubble tea": "boba teh",
     "kopsu": "kopi susu",
     "americano": "kopi americano",
     "minol": "minuman beralkohol",
     # Taste / quality
     "enakk": "enak",
-    "mantul": "mantap betul",
     "kriuk": "renyah",
     "pedes": "pedas",
     "asem": "asam",
@@ -1127,8 +1074,6 @@ _FOOD_DRINK: dict[str, str] = {
     # Meal times / hunger
     "makanmalam": "makan malam",
     "srpn": "sarapan",
-    "malem": "malam",
-    "laper": "lapar",
     "laperan": "sedang lapar",
     "kelaperan": "sangat lapar",
     "ngidam": "mengidam",
@@ -1145,7 +1090,6 @@ _CLOTHING_FASHION: dict[str, str] = {
     "kmja": "kemeja",
     "jket": "jaket",
     "cln": "celana",
-    "dress": "gaun",
     "jlbb": "jilbab",
     "hijaber": "pengguna hijab",
     "krdng": "kerudung",
@@ -1153,40 +1097,19 @@ _CLOTHING_FASHION: dict[str, str] = {
     "pjm": "piyama",
     "sweter": "sweater",
     "hudi": "hoodie",
-    "cardigan": "kardigan",
-    "outer": "jaket luar",
     "outher": "jaket luar",
-    "vest": "rompi",
     # Footwear
     "spt2": "sepatu-sepatu",
     "sdl": "sandal",
-    "sneakers": "sepatu kets",
     "snakers": "sepatu kets",
-    "boots": "sepatu bot",
-    "heels": "sepatu hak tinggi",
     "higheels": "sepatu hak tinggi",
     "flatshoes": "sepatu flat",
-    "slippers": "sandal",
     # Accessories
-    "tote bag": "tas tote",
-    "totebag": "tas tote",
     "dmpt": "dompet",
     "jamtgn": "jam tangan",
     "kacmt": "kacamata",
     # Fashion terms
-    "outfit": "pakaian",
-    "ootd": "pakaian hari ini",
-    "mix match": "padupadan",
-    "mixmatch": "padupadan",
-    "casual": "kasual",
-    "stylish": "bergaya",
-    "trendy": "trendi",
-    "vintage": "jadul bergaya",
-    "thrift": "beli baju bekas",
-    "thrifting": "belanja baju bekas",
-    "preloved": "bekas pakai",
     "ukrn": "ukuran",
-    "size": "ukuran",
     "kebesaran": "terlalu besar",
     "kekecilan": "terlalu kecil",
 }
@@ -1194,8 +1117,6 @@ _CLOTHING_FASHION: dict[str, str] = {
 # Transportation vocabulary
 _TRANSPORTATION: dict[str, str] = {
     # Vehicles
-    "mtr": "motor",
-    "mbl": "mobil",
     "spd": "sepeda",
     "angkot": "angkutan kota",
     "busway": "bus transjakarta",
@@ -1214,7 +1135,6 @@ _TRANSPORTATION: dict[str, str] = {
     "bnsn": "bensin",
     "bbm": "bahan bakar minyak",
     # Navigation / travel
-    "jln": "jalan",
     "mct": "macet",
     "plkmpng": "pulang kampung",
     "prjlnan": "perjalanan",
@@ -1280,7 +1200,6 @@ _RELIGION_CULTURE: dict[str, str] = {
     "ultah": "ulang tahun",
     "ulangtahun": "ulang tahun",
     "ultahku": "ulang tahunku",
-    "happy birthday": "selamat ulang tahun",
     "hbd": "selamat ulang tahun",
     "hbday": "selamat ulang tahun",
     "met ultah": "selamat ulang tahun",
@@ -1307,42 +1226,27 @@ _EDUCATION_EXTENDED: dict[str, str] = {
     "univrsitas": "universitas",
     "kampus": "kampus",
     "kuliah": "kuliah",
-    "mhsw": "mahasiswa",
     "dsn": "dosen",
     "gr": "guru",
     "kepsek": "kepala sekolah",
     "kpsek": "kepala sekolah",
     # Academic activities
-    "bljar": "belajar",
-    "bljr": "belajar",
-    "ngajar": "mengajar",
-    "ngjar": "mengajar",
-    "ulngn": "ulangan",
-    "tgs": "tugas",
-    "pr": "pekerjaan rumah",
     "homework": "pekerjaan rumah",
     "hw": "pekerjaan rumah",
     "presntsi": "presentasi",
-    "prsnts": "presentasi",
     "laporan": "laporan",
-    "lprn": "laporan",
     "mklh": "makalah",
-    "skrpsi": "skripsi",
     "thesis": "tesis",
     "wsuda": "wisuda",
     "wsda": "wisuda",
-    "wsd": "wisuda",
     "yudisium": "yudisium",
     "ospek": "orientasi studi",
     "maba": "mahasiswa baru",
     "mhs baru": "mahasiswa baru",
     # Grades & results
     "nilai": "nilai",
-    "nlai": "nilai",
     "rapor": "rapor",
     "raport": "rapor",
-    "ipk": "indeks prestasi kumulatif",
-    "ip": "indeks prestasi",
     "llus": "lulus",
     "lls": "lulus",
     "ggal": "gagal",
@@ -1378,7 +1282,6 @@ _WORK_OFFICE: dict[str, str] = {
     "krja": "kerja",
     "kerjaan": "pekerjaan",
     "krjaan": "pekerjaan",
-    "kntr": "kantor",
     "prusahaan": "perusahaan",
     "prshn": "perusahaan",
     "bos": "atasan",
@@ -1389,80 +1292,36 @@ _WORK_OFFICE: dict[str, str] = {
     "pns": "pegawai negeri sipil",
     "asn": "aparatur sipil negara",
     "honorer": "tenaga honorer",
-    "freelance": "pekerja lepas",
     "frilens": "pekerja lepas",
     "wfh": "kerja dari rumah",
     "wfo": "kerja dari kantor",
     "wfa": "kerja dari mana saja",
-    "remote": "kerja jarak jauh",
-    "hybrid": "kerja hibrida",
-    "intern": "magang",
     "mgang": "magang",
     "kntrak": "kontrak",
-    "resign": "mengundurkan diri",
     "resignasi": "pengunduran diri",
     "phk": "pemutusan hubungan kerja",
     # Work activities
     "rpt": "rapat",
-    "meeting": "rapat",
     "mtg": "rapat",
-    "zoom": "rapat video",
-    "gmeet": "google meet",
-    "deadline": "batas waktu",
-    "dl": "batas waktu",
     "dl nya": "batas waktunya",
-    "submit": "kirimkan",
     "sbmt": "kirimkan",
-    "rvisi": "revisi",
-    "approval": "persetujuan",
-    "approved": "disetujui",
-    "acc": "disetujui",
-    "reject": "ditolak",
-    "feedback": "masukan",
     "ftdbk": "masukan",
-    "report": "laporan",
-    "update": "perbarui",
-    "followup": "tindak lanjut",
     "fu": "tindak lanjut",
-    "asap": "sesegera mungkin",
-    "urgent": "mendesak",
-    "priority": "prioritas",
     "prio": "prioritas",
-    "kpi": "indikator kinerja utama",
     "okr": "tujuan dan hasil kunci",
-    "brainstorm": "curah gagasan",
     "brnstrm": "curah gagasan",
     # Finance / salary
     "gji": "gaji",
     "gajinya": "gajinya",
     "thr": "tunjangan hari raya",
     "lmbr": "lembur",
-    "overtime": "lembur",
     "ot": "lembur",
     "ct": "cuti",
-    "check in": "masuk kerja",
-    "checkin": "masuk kerja",
-    "check out": "keluar kerja",
-    "checkout": "keluar kerja",
     # Tools / digital work
-    "email": "surel",
-    "mailing": "mengirim surel",
     "cc": "tembusan",
     "bcc": "tembusan tersembunyi",
-    "forward": "teruskan",
-    "teams": "microsoft teams",
-    "ms teams": "microsoft teams",
-    "excel": "microsoft excel",
-    "word": "microsoft word",
     "ppt": "powerpoint",
-    "powerpoint": "presentasi powerpoint",
-    "drive": "google drive",
-    "cloud": "komputasi awan",
-    "database": "basis data",
-    "app": "aplikasi",
     "apk": "aplikasi",
-    "software": "perangkat lunak",
-    "hardware": "perangkat keras",
 }
 
 # Numbers, measurements & quantity expressions
@@ -1506,7 +1365,6 @@ _NUMBERS_QUANTITY: dict[str, str] = {
     "ssgera": "segera",
     "sgera": "segera",
     "sgra": "segera",
-    "cpat": "cepat",
 }
 
 # Common compound slang expressions & phrases
@@ -1623,14 +1481,12 @@ _PARTICLES: dict[str, str] = {
     "sich": "sih",
     # ── Other Particle Variants ──
     "loh": "lho",
-    "lo": "lho",
     "punn": "pun",
     "tohh": "toh",
     "kahh": "kah",
     "tahh": "tah",
     "woy": "woi",
     "woyy": "woi",
-    "hey": "hei",
     "yukk": "yuk",
     "yuk ah": "yuk",
     "ahh": "ah",
@@ -1704,6 +1560,17 @@ _CONSONANT_REPEAT = re.compile(r"([^\W\s\daeiouAEIOU])\1{2,}")
 # Whitespace normalization
 _WHITESPACE = re.compile(r"\s+")
 
+# Atomic entities (URLs, www domains, emails, @handles, #hashtags) protected
+# from repetition collapse and slang lookup.
+_PROTECTED_ENTITY_RE: re.Pattern[str] = re.compile(
+    r"(?:https?://\S+?(?=[.,!?;:)\]]*(?:\s|$))"
+    r"|\bwww\.\S+?(?=[.,!?;:)\]]*(?:\s|$))"
+    r"|\b[\w.+-]+@[\w-]+(?:\.[\w-]+)+"
+    r"|(?<!\w)[@#]\w+)",
+    re.IGNORECASE,
+)
+_PLACEHOLDER_RE: re.Pattern[str] = re.compile(r"\x00(\d+)\x00")
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # MAIN CLASS
@@ -1735,7 +1602,7 @@ class SlangNormalizer:
         self.mapping: dict[str, str] = {k.lower(): v for k, v in _DEFAULT_SLANG.items()}
         if custom_mapping:
             self.mapping.update({k.lower(): v for k, v in custom_mapping.items()})
-        self._regex: re.Pattern | None = None
+        self._regex: re.Pattern[str] | None = None
         self._compile_pattern()
 
     # ─── Internal ────────────────────────────────────────────────────────────
@@ -1850,6 +1717,17 @@ class SlangNormalizer:
         if not text or not text.strip():
             return text
 
+        placeholders: list[str] = []
+
+        def _stash(value: str) -> str:
+            idx = len(placeholders)
+            placeholders.append(value)
+            return f"\x00{idx}\x00"
+
+        # Protect atomic entities (URLs, www domains, emails, handles, hashtags)
+        # before character reduction and slang passes.
+        text = _PROTECTED_ENTITY_RE.sub(lambda m: _stash(m.group(0)), text)
+
         # Step 1: Slang replacement with two-pass per-token lookup.
         # The regex matches candidates from the slang dict; for each match:
         #   Pass A – lookup the original token (handles "krjaan" which has a
@@ -1860,7 +1738,7 @@ class SlangNormalizer:
         #              collapsed even when no dict entry exists.
         if self._regex:
 
-            def _replace(match: re.Match) -> str:
+            def _replace(match: re.Match[str]) -> str:
                 original = match.group(1)
                 word = original.lower()
 
@@ -1868,16 +1746,16 @@ class SlangNormalizer:
                 if word in self.mapping:
                     result = self.mapping[word]
                     if not lowercase:
-                        return self._mirror_case(original, result)
-                    return result
+                        result = self._mirror_case(original, result)
+                    return _stash(result)
 
                 # Pass B: reduce chars first, then lookup
                 reduced = self._reduce_repeated_chars(word)
                 if reduced in self.mapping:
                     result = self.mapping[reduced]
                     if not lowercase:
-                        return self._mirror_case(original, result)
-                    return result
+                        result = self._mirror_case(original, result)
+                    return _stash(result)
 
                 # Fallback: return char-reduced form (preserves original case)
                 return self._reduce_repeated_chars(original)
@@ -1897,6 +1775,10 @@ class SlangNormalizer:
         # after Step 2 (e.g. "gwwww" -> "gw" -> "saya", "gkkkk" -> "gk" -> "tidak").
         if self._regex:
             text = self._regex.sub(_replace, text)
+
+        # Restore masked entities and Step 1/3 slang replacements in one pass.
+        if placeholders:
+            text = _PLACEHOLDER_RE.sub(lambda m: placeholders[int(m.group(1))], text)
 
         # Step 4: Normalize whitespace
         if normalize_whitespace:

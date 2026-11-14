@@ -10,6 +10,20 @@ The project follows Semantic Versioning (SemVer).
 
 ---
 
+## [0.1.1] - 2026-11-14
+
+Patch release focusing on over-normalization (`ONER`) safety, dictionary integrity, and runtime hygiene.
+
+### Fixed
+
+* Protected URLs, `www.*` domains, email addresses, `@handles`, and `#hashtags` from character-repetition reduction and slang substitution (fixes `www.indonesia.go.id` $\rightarrow$ `saya.indonesia.go.id`).
+* Isolated the two-pass slang normalization pipeline so Step 1 replacement outputs are never re-expanded in Step 3.
+* Removed unprompted English loanword translations (`meeting`, `deadline`, `database`, `email`, `reject`, etc.) and false-positive standard Indonesian mutations (`lalu`, `parah`, `gila`, `nya`) to preserve code-switched and formal text.
+* Deduplicated all 47 colliding keys across category dictionaries in `slang.py` (resolving conflicts on `dr`, `dah`, `lo`, `kpi`, and `nih`).
+* Moved documentation dependencies (`mkdocs-ask-ai`, `pydantic`) out of core runtime dependencies (`dependencies = []`) and resolved strict `mypy` type annotations.
+
+---
+
 ## [0.1.0] - 2026-07-02
 
 First stable release.
