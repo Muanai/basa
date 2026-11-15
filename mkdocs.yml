@@ -1,7 +1,9 @@
 site_name: BASA
 site_url: https://Muanai.github.io/basa/
-repo_name: BASA v0.1
+repo_name: BASA
 repo_url: https://github.com/Muanai/basa
+exclude_docs: |
+  superpowers/
 theme:
   name: material
   font:
@@ -58,6 +60,9 @@ extra_css:
 
 copyright: Copyright &copy; 2026 BASA
 extra:
+  version:
+    provider: mike
+    default: latest
   social:
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/basa/
