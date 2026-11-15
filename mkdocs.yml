@@ -57,12 +57,15 @@ nav:
   - About: about.md
 extra_css:
   - stylesheets/custom.css
+extra_javascript:
+  - javascripts/version-active.js
 
 copyright: Copyright &copy; 2026 BASA
 extra:
   version:
     provider: mike
     default: latest
+    alias: true
   social:
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/basa/

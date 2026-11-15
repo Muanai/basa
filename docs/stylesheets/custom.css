@@ -387,3 +387,55 @@ body, .md-typeset {
     padding: 0 !important;
   }
 }
+
+/* Version selector (mike) styling */
+.md-version {
+  position: relative;
+}
+
+.md-version__current,
+.md-version__link,
+.md-version__alias {
+  font-weight: 400 !important;
+}
+
+.md-version__current::before {
+  content: "Version: ";
+}
+
+.md-version__alias::before {
+  content: "(";
+}
+
+.md-version__alias::after {
+  content: ")";
+}
+
+.md-version__list {
+  top: 100% !important;
+  left: 0 !important;
+  margin-top: 0.15rem !important;
+  padding: 0.25rem !important;
+}
+
+.md-version__link {
+  border-radius: 4px;
+  padding: 0.25rem 0.6rem !important;
+}
+
+.md-version__link:hover,
+.md-version__link:focus {
+  color: inherit !important;
+  background-color: transparent !important;
+}
+
+.md-version__link--active,
+.md-version__link--active:hover,
+.md-version__link--active:focus {
+  background-color: var(--md-accent-fg-color) !important;
+  color: #ffffff !important;
+}
+
+.md-version__link--active .md-version__alias {
+  opacity: 0.9;
+}
