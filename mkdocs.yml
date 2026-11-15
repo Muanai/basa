@@ -6,6 +6,8 @@ exclude_docs: |
   superpowers/
 theme:
   name: material
+  logo: assets/basa.png
+  favicon: assets/favicon.ico
   font:
     code: Consolas Regular
     text: DM Sans
