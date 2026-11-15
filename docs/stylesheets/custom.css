@@ -439,3 +439,13 @@ body, .md-typeset {
 .md-version__link--active .md-version__alias {
   opacity: 0.9;
 }
+
+.askai-trigger:hover,
+.askai-trigger:focus-visible {
+  border-color: var(--md-default-fg-color--lightest, rgba(0, 0, 0, .12)) !important;
+  outline: none !important;
+}
+
+.askai-trigger > svg:first-child {
+  display: none !important;
+}
