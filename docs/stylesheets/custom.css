@@ -391,9 +391,25 @@ body, .md-typeset {
 /* Version selector (mike) styling */
 .md-version {
   position: relative;
+  display: flex;
+  align-items: center;
+  font-size: 0.65rem !important;
 }
 
-.md-version__current,
+.md-version__current {
+  color: var(--md-default-fg-color--light);
+  font-weight: 400 !important;
+  line-height: 2.4rem;
+  top: 0 !important;
+  margin-left: 1rem !important;
+}
+
+.md-version__current::after {
+  width: 0.35rem !important;
+  height: 0.5rem !important;
+  margin-left: 0.3rem !important;
+}
+
 .md-version__link,
 .md-version__alias {
   font-weight: 400 !important;
@@ -401,6 +417,11 @@ body, .md-typeset {
 
 .md-version__current::before {
   content: "Version: ";
+}
+
+.md-version__current .md-version__alias {
+  margin-left: 0.25rem;
+  opacity: 1;
 }
 
 .md-version__alias::before {
@@ -414,30 +435,40 @@ body, .md-typeset {
 .md-version__list {
   top: 100% !important;
   left: 0 !important;
-  margin-top: 0.15rem !important;
-  padding: 0.25rem !important;
+  margin: 0 0 0 1.4rem !important;
+  padding: 0.3rem !important;
+  min-width: 9.5rem;
+  border-radius: 6px !important;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+.md-version__list .md-version__alias {
+  display: none !important;
+}
+
+.md-version__item {
+  line-height: 1.4 !important;
 }
 
 .md-version__link {
-  border-radius: 4px;
-  padding: 0.25rem 0.6rem !important;
+  border-radius: 5px;
+  padding: 0.3rem 0.6rem !important;
+  font-size: 0.7rem;
+  color: var(--md-default-fg-color);
 }
 
 .md-version__link:hover,
 .md-version__link:focus {
-  color: inherit !important;
+  color: var(--md-default-fg-color) !important;
   background-color: transparent !important;
 }
 
 .md-version__link--active,
 .md-version__link--active:hover,
 .md-version__link--active:focus {
-  background-color: var(--md-accent-fg-color) !important;
-  color: #ffffff !important;
-}
-
-.md-version__link--active .md-version__alias {
-  opacity: 0.9;
+  background-color: rgba(128, 128, 128, 0.12) !important;
+  color: var(--md-default-fg-color) !important;
 }
 
 .askai-trigger:hover,
