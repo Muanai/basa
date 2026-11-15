@@ -1,0 +1,19 @@
+# BASA
+
+## all
+
+- [Home](https://Muanai.github.io/basa/0.1.1/index.md)
+- [About](https://Muanai.github.io/basa/0.1.1/about/index.md)
+- [Changelog](https://Muanai.github.io/basa/0.1.1/changelog/index.md)
+- [FAQ](https://Muanai.github.io/basa/0.1.1/faq/index.md)
+- [Installation](https://Muanai.github.io/basa/0.1.1/installation/index.md)
+- [Design Philosophy](https://Muanai.github.io/basa/0.1.1/philosophy/index.md)
+- [Quick Start](https://Muanai.github.io/basa/0.1.1/quickstart/index.md)
+- [Roadmap](https://Muanai.github.io/basa/0.1.1/roadmap/index.md)
+- [normalize()](https://Muanai.github.io/basa/0.1.1/api/normalize/index.md)
+- [quick()](https://Muanai.github.io/basa/0.1.1/api/quick/index.md)
+- [slang](https://Muanai.github.io/basa/0.1.1/api/slang/index.md)
+- [typo](https://Muanai.github.io/basa/0.1.1/api/typo/index.md)
+- [Batch Processing](https://Muanai.github.io/basa/0.1.1/guides/batch-processing/index.md)
+- [Cleaning Social Media Text](https://Muanai.github.io/basa/0.1.1/guides/social-media/index.md)
+- [Typo Correction](https://Muanai.github.io/basa/0.1.1/guides/typo-correction/index.md)
