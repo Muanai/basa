@@ -460,13 +460,6 @@ body, .md-typeset {
 
 .md-version__link:hover,
 .md-version__link:focus {
-  color: var(--md-default-fg-color) !important;
-  background-color: transparent !important;
-}
-
-.md-version__link--active,
-.md-version__link--active:hover,
-.md-version__link--active:focus {
   background-color: rgba(128, 128, 128, 0.12) !important;
   color: var(--md-default-fg-color) !important;
 }

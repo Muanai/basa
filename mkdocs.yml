@@ -59,8 +59,6 @@ nav:
   - About: about.md
 extra_css:
   - stylesheets/custom.css
-extra_javascript:
-  - javascripts/version-active.js
 
 copyright: Copyright &copy; 2026 BASA
 extra:
