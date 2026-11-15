@@ -471,12 +471,15 @@ body, .md-typeset {
   color: var(--md-default-fg-color) !important;
 }
 
-.askai-trigger:hover,
-.askai-trigger:focus-visible {
+#askai-wrap #askai-trigger:hover,
+#askai-wrap #askai-trigger:focus,
+#askai-wrap #askai-trigger:focus-visible,
+#askai-wrap #askai-trigger:active {
   border-color: var(--md-default-fg-color--lightest, rgba(0, 0, 0, .12)) !important;
   outline: none !important;
 }
 
-.askai-trigger > svg:first-child {
+#askai-wrap #askai-trigger > svg:first-child,
+#askai-wrap #askai-trigger > svg:not(.askai-chevron) {
   display: none !important;
 }
