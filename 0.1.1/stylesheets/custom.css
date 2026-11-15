@@ -458,9 +458,15 @@ body, .md-typeset {
   color: var(--md-default-fg-color);
 }
 
-.md-version__link:hover,
-.md-version__link:focus {
-  background-color: rgba(128, 128, 128, 0.12) !important;
+[data-md-color-scheme="default"] .md-version__item .md-version__link:hover,
+[data-md-color-scheme="default"] .md-version__item .md-version__link:focus {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+  color: var(--md-default-fg-color) !important;
+}
+
+[data-md-color-scheme="slate"] .md-version__item .md-version__link:hover,
+[data-md-color-scheme="slate"] .md-version__item .md-version__link:focus {
+  background-color: rgba(255, 255, 255, 0.12) !important;
   color: var(--md-default-fg-color) !important;
 }
 
