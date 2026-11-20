@@ -142,30 +142,54 @@ def _bounded_levenshtein(s1: str, s2: str, max_dist: int) -> int:
     s1 = s1[start:len1]
     s2 = s2[start:len2]
 
-    if len(s1) < len(s2):
+    m, n = len(s1), len(s2)
+    if m < n:
         s1, s2 = s2, s1
+        m, n = n, m
 
-    if len(s2) == 0:
-        return len(s1)
+    if n == 0:
+        return m if m <= max_dist else max_dist + 1
 
-    previous_row: list[int] = list(range(len(s2) + 1))
+    if m - n > max_dist:
+        return max_dist + 1
 
-    for i, c1 in enumerate(s1):
-        current_row: list[int] = [i + 1]
-        row_min = i + 1
-        for j, c2 in enumerate(s2):
-            insertions = previous_row[j + 1] + 1
-            deletions = current_row[j] + 1
-            substitutions = previous_row[j] + (c1 != c2)
-            cell = min(insertions, deletions, substitutions)
-            current_row.append(cell)
-            if cell < row_min:
-                row_min = cell
+    inf = max_dist + 1
+    prev: list[int] = list(range(n + 1))
+    curr: list[int] = [0] * (n + 1)
+
+    for i in range(m):
+        c1 = s1[i]
+        j_start = i - max_dist
+        if j_start < 0:
+            j_start = 0
+        j_end = i + max_dist + 1
+        if j_end > n:
+            j_end = n
+
+        curr[0] = i + 1
+        if j_start > 0:
+            curr[j_start] = inf
+        row_min = curr[j_start]
+
+        for j in range(j_start, j_end):
+            cost = prev[j] if c1 == s2[j] else prev[j] + 1
+            ins = prev[j + 1] + 1
+            if ins < cost:
+                cost = ins
+            dele = curr[j] + 1
+            if dele < cost:
+                cost = dele
+            curr[j + 1] = cost
+            if cost < row_min:
+                row_min = cost
+
+        if j_end < n:
+            curr[j_end + 1] = inf
         if row_min > max_dist:
-            return max_dist + 1
-        previous_row = current_row
+            return inf
+        prev, curr = curr, prev
 
-    return previous_row[-1]
+    return prev[n]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
