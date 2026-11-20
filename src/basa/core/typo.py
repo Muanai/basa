@@ -54,6 +54,8 @@ Notes:
 
 from __future__ import annotations
 
+import re
+from collections import defaultdict
 from collections.abc import Iterable
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -111,6 +113,149 @@ def levenshtein_distance(s1: str, s2: str) -> int:
     return previous_row[-1]
 
 
+def _bounded_levenshtein(s1: str, s2: str, max_dist: int) -> int:
+    """
+    Compute Levenshtein edit distance bounded by ``max_dist``.
+
+    Short-circuits immediately when string lengths differ by more than
+    ``max_dist``, and exits early if the minimum value in a DP row exceeds
+    ``max_dist``.
+
+    Returns:
+        Exact edit distance if ``<= max_dist``, otherwise ``max_dist + 1``.
+    """
+    if max_dist < 0:
+        return 0 if s1 == s2 else 1
+
+    if abs(len(s1) - len(s2)) > max_dist:
+        return max_dist + 1
+
+    # Strip matching prefix and suffix (invariant under Levenshtein distance)
+    start = 0
+    len1, len2 = len(s1), len(s2)
+    while start < len1 and start < len2 and s1[start] == s2[start]:
+        start += 1
+    while len1 > start and len2 > start and s1[len1 - 1] == s2[len2 - 1]:
+        len1 -= 1
+        len2 -= 1
+
+    s1 = s1[start:len1]
+    s2 = s2[start:len2]
+
+    if len(s1) < len(s2):
+        s1, s2 = s2, s1
+
+    if len(s2) == 0:
+        return len(s1)
+
+    previous_row: list[int] = list(range(len(s2) + 1))
+
+    for i, c1 in enumerate(s1):
+        current_row: list[int] = [i + 1]
+        row_min = i + 1
+        for j, c2 in enumerate(s2):
+            insertions = previous_row[j + 1] + 1
+            deletions = current_row[j] + 1
+            substitutions = previous_row[j] + (c1 != c2)
+            cell = min(insertions, deletions, substitutions)
+            current_row.append(cell)
+            if cell < row_min:
+                row_min = cell
+        if row_min > max_dist:
+            return max_dist + 1
+        previous_row = current_row
+
+    return previous_row[-1]
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# SYMSPELL-STYLE DELETE INDEX
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+class _DeleteIndex:
+    """
+    SymSpell-style symmetric delete index for sub-linear candidate lookup.
+
+    Stores all substrings obtained by deleting up to ``max_edit_distance``
+    characters from each vocabulary word. Any query within edit distance
+    ``d <= max_edit_distance`` of a vocabulary word is guaranteed to share at
+    least one delete key with that word.
+    """
+
+    def __init__(self, max_edit_distance: int = 2) -> None:
+        self.max_edit_distance = max_edit_distance
+        self._words: set[str] = set()
+        self._deletes: defaultdict[str, set[str]] = defaultdict(set)
+
+    @staticmethod
+    def _generate_deletes(word: str, max_dist: int) -> set[str]:
+        """Return ``word`` and all deletions up to ``max_dist`` characters."""
+        result: set[str] = {word}
+        frontier: set[str] = {word}
+        for _ in range(max_dist):
+            next_frontier: set[str] = set()
+            for token in frontier:
+                for idx in range(len(token)):
+                    deleted = token[:idx] + token[idx + 1 :]
+                    if deleted not in result:
+                        result.add(deleted)
+                        next_frontier.add(deleted)
+            if not next_frontier:
+                break
+            frontier = next_frontier
+        return result
+
+    def add(self, word: str) -> None:
+        """Index a single lowercased word."""
+        if word in self._words:
+            return
+        self._words.add(word)
+        for key in self._generate_deletes(word, self.max_edit_distance):
+            self._deletes[key].add(word)
+
+    def remove(self, word: str) -> None:
+        """Remove a single lowercased word from the index."""
+        if word not in self._words:
+            return
+        self._words.remove(word)
+        for key in self._generate_deletes(word, self.max_edit_distance):
+            bucket = self._deletes.get(key)
+            if bucket is not None:
+                bucket.discard(word)
+                if not bucket:
+                    del self._deletes[key]
+
+    def clear(self) -> None:
+        """Clear all indexed words and delete buckets."""
+        self._words.clear()
+        self._deletes.clear()
+
+    def candidates(self, word: str, max_dist: int) -> set[str]:
+        """
+        Return candidate vocabulary words potentially within ``max_dist``.
+
+        Falls back to a length-filtered scan over indexed words when
+        ``max_dist`` exceeds ``self.max_edit_distance``.
+        """
+        if max_dist <= self.max_edit_distance:
+            matches: set[str] = set()
+            for key in self._generate_deletes(word, max_dist):
+                bucket = self._deletes.get(key)
+                if bucket is not None:
+                    matches.update(bucket)
+            return matches
+
+        return {w for w in self._words if abs(len(w) - len(word)) <= max_dist}
+
+
+_SKIP_TOKEN_RE: re.Pattern[str] = re.compile(
+    r"^(?:https?://\S+|www\.\S+|\S+@\S+\.\S+|[@#]\S+|.*\d.*)$",
+    re.IGNORECASE,
+)
+_EDGE_PUNCT_RE: re.Pattern[str] = re.compile(r"^([^a-zA-Z]*)([a-zA-Z]+)([^a-zA-Z]*)$")
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # TYPO CORRECTOR
 # ─────────────────────────────────────────────────────────────────────────────
@@ -162,6 +307,10 @@ class TypoCorrector:
         self.vocab: set[str] = {w.lower() for w in vocab} if vocab else set()
         self.min_word_length = min_word_length
         self.min_confidence = min_confidence
+
+        self._index = _DeleteIndex(max_edit_distance=2)
+        for word in self.vocab:
+            self._index.add(word)
 
         # ── Protected vocab (whitelist) ───────────────────────────────────────
         # Words in this set are always returned unchanged by correct(), even
@@ -222,30 +371,36 @@ class TypoCorrector:
 
     # ─── Vocabulary management ───────────────────────────────────────────────
 
-    def add_to_vocab(self, words: set[str]) -> None:
+    def add_to_vocab(self, words: Iterable[str]) -> None:
         """
         Add words to the vocabulary and invalidate the lookup cache.
 
         Args:
-            words: Set of words to add (stored as lowercase).
+            words: Iterable of words to add (stored as lowercase).
 
         Example:
             >>> corrector.add_to_vocab({"lightgbm", "catboost", "xgboost"})
         """
-        self.vocab.update(w.lower() for w in words)
+        for w in words:
+            lw = w.lower()
+            self.vocab.add(lw)
+            self._index.add(lw)
         self._invalidate_cache()
 
-    def remove_from_vocab(self, words: set[str]) -> None:
+    def remove_from_vocab(self, words: Iterable[str]) -> None:
         """
         Remove words from the vocabulary and invalidate the lookup cache.
 
         Args:
-            words: Set of words to remove.
+            words: Iterable of words to remove.
 
         Example:
             >>> corrector.remove_from_vocab({"kredivo"})
         """
-        self.vocab -= {w.lower() for w in words}
+        for w in words:
+            lw = w.lower()
+            self.vocab.discard(lw)
+            self._index.remove(lw)
         self._invalidate_cache()
 
     def clear_vocab(self) -> None:
@@ -258,7 +413,20 @@ class TypoCorrector:
             0
         """
         self.vocab.clear()
+        self._index.clear()
         self._invalidate_cache()
+
+    def load_default_vocab(self) -> None:
+        """Populate the vocabulary with BASA's built-in Indonesian word list."""
+        from .vocab import DEFAULT_VOCAB
+
+        self.add_to_vocab(DEFAULT_VOCAB)
+
+    def _find_candidates(self, word_lower: str, max_dist: int) -> Iterable[str]:
+        """Return candidate words from the index (or vocab if mutated directly)."""
+        if len(self._index._words) == len(self.vocab):
+            return self._index.candidates(word_lower, max_dist)
+        return (c for c in self.vocab if abs(len(word_lower) - len(c)) <= max_dist)
 
     # ─── Correction ──────────────────────────────────────────────────────────
 
@@ -321,22 +489,16 @@ class TypoCorrector:
 
         self._cache_misses += 1
 
-        # ── Linear scan with length-delta pruning ────────────────────────────
-        # Skipping candidates whose length differs by more than max_dist
-        # avoids computing Levenshtein for obviously too-different words,
-        # providing a significant speedup for large vocabularies.
-        best_match = word
-        min_dist = float("inf")
+        # ── Indexed candidate lookup with deterministic tie-breaking ─────────
+        best_match: str | None = None
+        min_dist = max_dist + 1
 
-        for candidate in self.vocab:
-            # Fast pre-filter: if lengths differ by more than max_dist,
-            # the edit distance is guaranteed to exceed max_dist — skip.
-            if abs(len(word_lower) - len(candidate)) > max_dist:
-                continue
-
-            dist = levenshtein_distance(word_lower, candidate)
-
-            if dist < min_dist and dist <= max_dist:
+        for candidate in self._find_candidates(word_lower, max_dist):
+            dist = _bounded_levenshtein(word_lower, candidate, max_dist)
+            if dist <= max_dist and (
+                dist < min_dist
+                or (dist == min_dist and (best_match is None or candidate < best_match))
+            ):
                 min_dist = dist
                 best_match = candidate
 
@@ -344,23 +506,24 @@ class TypoCorrector:
         # confidence = fraction of characters that are "correct".
         # e.g. "mkan" (len 4) corrected to "makan" (dist 1):
         #   confidence = 1 - 1/4 = 0.75  →  accepted if min_confidence ≤ 0.75
-        if best_match != word:
+        result = word
+        if best_match is not None:
             confidence = 1.0 - (min_dist / max(len(word_lower), 1))
-            if confidence < self.min_confidence:
-                best_match = word  # Not confident enough — keep original
+            if confidence >= self.min_confidence:
+                result = best_match
 
         # Store result in cache before returning
-        self._cache[word_lower] = best_match
-        return best_match
+        self._cache[word_lower] = result
+        return result
 
     def correct_text(self, text: str, max_dist: int = 2) -> str:
         """
         Correct all tokens in a text string.
 
-        Splits on whitespace, corrects each token independently, then
-        rejoins with a single space. Punctuation attached to words
-        (e.g. "mkan,") is treated as part of the token and may not
-        match the vocab — consider stripping punctuation upstream.
+        Splits on whitespace and corrects alphabetic tokens while skipping
+        URLs, domains, emails, social handles, hashtags, digits, and pure
+        punctuation. Leading/trailing punctuation around alphabetic words is
+        preserved.
 
         Args:
             text:     Input text string.
@@ -376,7 +539,17 @@ class TypoCorrector:
         if not text:
             return text
 
-        corrected = [self.correct(w, max_dist) for w in text.split()]
+        corrected: list[str] = []
+        for token in text.split():
+            if _SKIP_TOKEN_RE.match(token):
+                corrected.append(token)
+                continue
+            match = _EDGE_PUNCT_RE.match(token)
+            if match is None:
+                corrected.append(token)
+                continue
+            prefix, core, suffix = match.groups()
+            corrected.append(f"{prefix}{self.correct(core, max_dist)}{suffix}")
         return " ".join(corrected)
 
     def suggest(self, word: str, max_dist: int = 2, top_k: int = 3) -> list[str]:
@@ -402,12 +575,9 @@ class TypoCorrector:
         if word_lower in self.vocab:
             return [word_lower]
 
-        candidates = []
-        for candidate in self.vocab:
-            if abs(len(word_lower) - len(candidate)) > max_dist:
-                continue
-
-            dist = levenshtein_distance(word_lower, candidate)
+        candidates: list[tuple[int, str]] = []
+        for candidate in self._find_candidates(word_lower, max_dist):
+            dist = _bounded_levenshtein(word_lower, candidate, max_dist)
             if dist <= max_dist:
                 candidates.append((dist, candidate))
 
