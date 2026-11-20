@@ -749,5 +749,84 @@ class TestV011GuardrailsAndDeduplication:
                         seen[key] = dict_name
         assert duplicates == []
 
-    def test_version_is_0_1_1(self):
-        assert basa.__version__ == "0.1.1"
+    def test_version_is_0_2_0(self):
+        assert basa.__version__ == "0.2.0"
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# V0.2.0 LEXICON EXPANSION & CONCISE MODE
+# ─────────────────────────────────────────────────────────────────────────────
+
+
+class TestV020LexiconAndConciseMode:
+    """Tests for v0.2.0 lexicon expansion, canonical alignment, and mode."""
+
+    def test_new_abbreviations_expanded(self):
+        assert normalize("Surat ditujukan kpd direktur.") == (
+            "surat ditujukan kepada direktur."
+        )
+        assert normalize("Smg acara berjalan lancar.") == (
+            "semoga acara berjalan lancar."
+        )
+        assert normalize("Jelaskan bgmn prosesnya.") == (
+            "jelaskan bagaimana prosesnya."
+        )
+        assert normalize("Lampu mati shg ruangan gelap.") == (
+            "lampu mati sehingga ruangan gelap."
+        )
+        assert normalize("Pasien msh dirawat.") == "pasien masih dirawat."
+        assert normalize("Petugas sdg memeriksa berkas.") == (
+            "petugas sedang memeriksa berkas."
+        )
+        assert normalize("Kl ada pertanyaan silakan bertanya.") == (
+            "kalau ada pertanyaan silakan bertanya."
+        )
+        assert normalize("Perjalanan menuju Jkt.") == "perjalanan menuju jakarta."
+        assert normalize("Dia bertindak sbg saksi.") == ("dia bertindak sebagai saksi.")
+        assert normalize("Bagus skali hasilnya.") == "bagus sekali hasilnya."
+
+    def test_new_youth_and_internet_slang(self):
+        assert normalize("Pernyataan itu gaje.") == "pernyataan itu tidak jelas."
+        assert normalize("Gaya pakaiannya alay.") == "gaya pakaiannya norak."
+        assert normalize("Dia langsung kicep.") == "dia langsung terdiam."
+        assert normalize("Dia suka curcol.") == "dia suka curhat colongan."
+        assert normalize("Itu cuma modus dia.") == "itu cuma modal dusta dia."
+        assert normalize("Tempat ini sangat pewe.") == "tempat ini sangat nyaman."
+        assert normalize("Aktor itu cogan.") == "aktor itu cowok ganteng."
+        assert normalize("Model itu cecan.") == "model itu cewek cantik."
+        assert normalize("Apakah kamu sabi datang?") == "apakah kamu bisa datang?"
+        assert normalize("Ayo kita kuy berangkat.") == "ayo kita yuk berangkat."
+        assert normalize("Mereka menari pargoy.") == "mereka menari partai goyang."
+        assert normalize("Komuk dia lelah.") == "muka dia lelah."
+        assert normalize("Dia masih gamon.") == "dia masih gagal berpaling."
+        assert normalize("Jangan sotoy.") == "jangan sok tahu."
+        assert normalize("Santai aja keles.") == "santai saja kali."
+
+    def test_canonical_targets(self):
+        assert normalize("Saya mager hari ini.") == "saya malas gerak hari ini."
+        assert normalize("Dia sangat kepo.") == "dia sangat penasaran."
+        assert normalize("Leluconnya gokil sekali.") == "leluconnya gila sekali."
+        assert normalize("Mereka sedang gabut.") == "mereka sedang gaji buta."
+        assert normalize("Jangan ulangi lg.") == "jangan ulangi lagi."
+
+    def test_concise_mode_outputs(self):
+        assert normalize("gw mager bgt gercep", mode="concise") == (
+            "saya malas sekali cepat"
+        )
+        assert quick("gw mager bgt gercep", mode="concise") == (
+            "saya malas sekali cepat"
+        )
+        assert normalize("gw mager bgt gercep", mode="formal") == (
+            "saya malas gerak banget gerak cepat"
+        )
+
+    def test_concise_mode_preserves_casing_when_lowercase_false(self):
+        assert (
+            normalize("Mager GERCEP", lowercase=False, mode="concise") == "Malas CEPAT"
+        )
+
+    def test_invalid_mode_raises_value_error(self):
+        with pytest.raises(ValueError, match="mode"):
+            normalize("halo", mode="invalid")  # type: ignore[arg-type]
+        with pytest.raises(ValueError, match="mode"):
+            quick("halo", mode="invalid")  # type: ignore[arg-type]

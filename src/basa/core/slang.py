@@ -66,7 +66,10 @@ Notes:
       to avoid breaking abbreviations like "kk", "dll", "mm".
 """
 
+from __future__ import annotations
+
 import re
+from typing import Literal
 
 # ─────────────────────────────────────────────────────────────────────────────
 # SLANG DICTIONARY (organized by category for easier maintenance)
@@ -220,6 +223,7 @@ _CONJUNCTIONS: dict[str, str] = {
     "bwt": "buat",
     "spy": "supaya",
     "klo": "kalau",
+    "kl": "kalau",
     "kalo": "kalau",
     "yg": "yang",
     "dgn": "dengan",
@@ -227,6 +231,9 @@ _CONJUNCTIONS: dict[str, str] = {
     "jg": "juga",
     "pd": "pada",
     "dlm": "dalam",
+    "kpd": "kepada",
+    "shg": "sehingga",
+    "sbg": "sebagai",
     # Formal abbreviations
     "dll": "dan lain-lain",
     "dsb": "dan sebagainya",
@@ -267,8 +274,9 @@ _VERBS: dict[str, str] = {
     "udeh": "sudah",
     "blm": "belum",
     "blum": "belum",
-    "lg": "sedang",
+    "lg": "lagi",
     "lgi": "sedang",
+    "sdg": "sedang",
     "bs": "bisa",
     "bsa": "bisa",
     "jd": "jadi",
@@ -369,6 +377,9 @@ _ADJECTIVES_ADVERBS: dict[str, str] = {
     "bnget": "banget",
     "bget": "banget",
     "bet": "banget",
+    "skali": "sekali",
+    "msh": "masih",
+    "smg": "semoga",
     "amet": "amat",
     "bener": "benar",
     "bnr": "benar",
@@ -520,6 +531,7 @@ _QUESTION_WORDS: dict[str, str] = {
     "knpa": "kenapa",
     "knapa": "kenapa",
     "gmn": "bagaimana",
+    "bgmn": "bagaimana",
     "gmna": "bagaimana",
     "gimna": "bagaimana",
     "gimana": "bagaimana",
@@ -653,6 +665,7 @@ _TEMPORAL_LOCATION: dict[str, str] = {
     "dsni": "di sini",
     "sono": "sana",
     "mgg": "minggu",
+    "jkt": "jakarta",
     "bln": "bulan",
     "thn": "tahun",
     "mnt": "menit",
@@ -745,10 +758,10 @@ _ECOMMERCE_FINANCE: dict[str, str] = {
 
 # Youth / Gen-Z Indonesian slang
 _YOUTH_SLANG: dict[str, str] = {
-    "mager": "malas bergerak",
+    "mager": "malas gerak",
     "baper": "bawa perasaan",
-    "gabut": "tidak ada kegiatan",
-    "kepo": "ingin tahu",
+    "gabut": "gaji buta",
+    "kepo": "penasaran",
     "santuy": "santai",
     "woles": "santai",
     "gercep": "gerak cepat",
@@ -762,6 +775,21 @@ _YOUTH_SLANG: dict[str, str] = {
     "curhat": "berbagi cerita",
     "kekinian": "tren terkini",
     "kekinan": "tren terkini",
+    "gaje": "tidak jelas",
+    "alay": "norak",
+    "kicep": "terdiam",
+    "curcol": "curhat colongan",
+    "modus": "modal dusta",
+    "pewe": "nyaman",
+    "cogan": "cowok ganteng",
+    "cecan": "cewek cantik",
+    "sabi": "bisa",
+    "kuy": "yuk",
+    "pargoy": "partai goyang",
+    "komuk": "muka",
+    "gamon": "gagal berpaling",
+    "sotoy": "sok tahu",
+    "keles": "kali",
 }
 
 # Discourse markers and meta-commentary
@@ -967,7 +995,7 @@ _EMOTIONS_EXPRESSIONS: dict[str, str] = {
     "asoy": "asyik",
     "krn2": "keren-keren",
     "mantab": "mantap",
-    "gokil": "luar biasa",
+    "gokil": "gila",
     "gile": "luar biasa",
     "gilak": "luar biasa",
     "lebay": "berlebihan",
@@ -1533,6 +1561,18 @@ for _cat in (
 ):
     _DEFAULT_SLANG.update(_cat)
 
+# Concise-mode overrides: single-word / token-efficient replacements for
+# multi-word or verbose formal expansions (used when mode="concise").
+_CONCISE_OVERRIDES: dict[str, str] = dict(
+    [
+        ("mager", "malas"),
+        ("bgt", "sekali"),
+        ("gercep", "cepat"),
+        ("curcol", "curhat"),
+        ("mantul", "mantap"),
+    ]
+)
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # REPEATED CHARACTER NORMALIZATION PATTERNS
@@ -1600,8 +1640,11 @@ class SlangNormalizer:
 
     def __init__(self, custom_mapping: dict[str, str] | None = None):
         self.mapping: dict[str, str] = {k.lower(): v for k, v in _DEFAULT_SLANG.items()}
+        self._custom_keys: set[str] = set()
         if custom_mapping:
-            self.mapping.update({k.lower(): v for k, v in custom_mapping.items()})
+            lowered = {k.lower(): v for k, v in custom_mapping.items()}
+            self._custom_keys.update(lowered.keys())
+            self.mapping.update(lowered)
         self._regex: re.Pattern[str] | None = None
         self._compile_pattern()
 
@@ -1691,6 +1734,7 @@ class SlangNormalizer:
         text: str,
         normalize_whitespace: bool = True,
         lowercase: bool = True,
+        mode: Literal["formal", "concise"] = "formal",
     ) -> str:
         """
         Normalize a single text string.
@@ -1710,10 +1754,16 @@ class SlangNormalizer:
                        (all lowercase). If False, the casing pattern of the
                        original matched token is mirrored onto the replacement
                        (ALL-CAPS → upper, Title → capitalize, mixed → as-is).
+            mode: Normalization style — ``"formal"`` (default) uses full
+                  standard expansions; ``"concise"`` prefers shorter
+                  token-efficient replacements where defined.
 
         Returns:
             Normalized text string.
         """
+        if mode not in ("formal", "concise"):
+            raise ValueError(f"Invalid mode {mode!r}; expected 'formal' or 'concise'.")
+
         if not text or not text.strip():
             return text
 
@@ -1723,6 +1773,15 @@ class SlangNormalizer:
             idx = len(placeholders)
             placeholders.append(value)
             return f"\x00{idx}\x00"
+
+        def _lookup(key: str) -> str:
+            if (
+                mode == "concise"
+                and key in _CONCISE_OVERRIDES
+                and key not in self._custom_keys
+            ):
+                return _CONCISE_OVERRIDES[key]
+            return self.mapping[key]
 
         # Protect atomic entities (URLs, www domains, emails, handles, hashtags)
         # before character reduction and slang passes.
@@ -1744,7 +1803,7 @@ class SlangNormalizer:
 
                 # Pass A: direct lookup (preserve meaningful repeated vowels)
                 if word in self.mapping:
-                    result = self.mapping[word]
+                    result = _lookup(word)
                     if not lowercase:
                         result = self._mirror_case(original, result)
                     return _stash(result)
@@ -1752,7 +1811,7 @@ class SlangNormalizer:
                 # Pass B: reduce chars first, then lookup
                 reduced = self._reduce_repeated_chars(word)
                 if reduced in self.mapping:
-                    result = self.mapping[reduced]
+                    result = _lookup(reduced)
                     if not lowercase:
                         result = self._mirror_case(original, result)
                     return _stash(result)
@@ -1791,6 +1850,7 @@ class SlangNormalizer:
         texts: list[str],
         normalize_whitespace: bool = True,
         lowercase: bool = True,
+        mode: Literal["formal", "concise"] = "formal",
     ) -> list[str]:
         """
         Normalize a list of text strings efficiently.
@@ -1799,6 +1859,7 @@ class SlangNormalizer:
             texts: List of input strings.
             normalize_whitespace: Passed through to normalize().
             lowercase: Passed through to normalize().
+            mode: Passed through to normalize().
 
         Returns:
             List of normalized strings (same order as input).
@@ -1807,7 +1868,9 @@ class SlangNormalizer:
             >>> slang.normalize_batch(["gw udah makan", "km blm tidur?"])
             ['saya sudah makan', 'kamu belum tidur?']
         """
-        return [self.normalize(t, normalize_whitespace, lowercase) for t in texts]
+        return [
+            self.normalize(t, normalize_whitespace, lowercase, mode=mode) for t in texts
+        ]
 
     def add(self, word: str, replacement: str) -> None:
         """

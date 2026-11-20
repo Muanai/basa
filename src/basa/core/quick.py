@@ -21,10 +21,15 @@ Usage:
 
 from __future__ import annotations
 
+from typing import Literal
+
 from .normalize import normalize
 
 
-def quick(text: str | list[str]) -> str | list[str]:
+def quick(
+    text: str | list[str],
+    mode: Literal["formal", "concise"] = "formal",
+) -> str | list[str]:
     """
     Normalize informal Indonesian text with zero configuration.
 
@@ -33,6 +38,7 @@ def quick(text: str | list[str]) -> str | list[str]:
 
     Args:
         text: Input string or list of strings.
+        mode: Normalization style (``"formal"`` or ``"concise"``).
 
     Returns:
         Normalized string or list of normalized strings.
@@ -45,4 +51,4 @@ def quick(text: str | list[str]) -> str | list[str]:
         >>> quick(["gw mkan", "dia mnum"])
         ['saya makan', 'dia minum']
     """
-    return normalize(text)
+    return normalize(text, mode=mode)

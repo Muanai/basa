@@ -32,7 +32,9 @@ Usage:
 from __future__ import annotations
 
 import re
+from typing import Literal
 
+from .slang import _CONCISE_OVERRIDES
 from .slang import slang as slang_engine
 from .typo import typo as typo_engine
 
@@ -45,7 +47,9 @@ from .typo import typo as typo_engine
 # that words which are already correct are not mis-corrected to whatever small
 # vocabulary the caller happens to have loaded.
 _SLANG_OUTPUT_WORDS: frozenset[str] = frozenset(
-    token for value in slang_engine.mapping.values() for token in value.lower().split()
+    token
+    for value in (*slang_engine.mapping.values(), *_CONCISE_OVERRIDES.values())
+    for token in value.lower().split()
 )
 typo_engine.set_protected(_SLANG_OUTPUT_WORDS)
 
@@ -84,6 +88,7 @@ def _normalize_single(
     lowercase: bool,
     normalize_punctuation: bool,
     normalize_whitespace: bool,
+    mode: Literal["formal", "concise"] = "formal",
 ) -> str:
     """
     Apply the full normalization pipeline to a single string.
@@ -114,7 +119,7 @@ def _normalize_single(
     # We defer whitespace normalization to Stage 5.
     if apply_slang:
         text = slang_engine.normalize(
-            text, normalize_whitespace=False, lowercase=lowercase
+            text, normalize_whitespace=False, lowercase=lowercase, mode=mode
         )
 
     # ── Stage 3: Typo Correction (Strictly Opt-in) ───────────────────────────
@@ -146,6 +151,7 @@ def normalize(
     lowercase: bool = True,
     normalize_punctuation: bool = True,
     normalize_whitespace: bool = True,
+    mode: Literal["formal", "concise"] = "formal",
 ) -> str | list[str]:
     """
     Normalize informal Indonesian text with a single line of code.
@@ -211,6 +217,9 @@ def normalize(
     # Guard note: the isinstance check is a *ternary guard*, not a filter, so
     # non-string elements (None, "", integers) are passed through unchanged and
     # the output list is always the same length as the input list.
+    if mode not in ("formal", "concise"):
+        raise ValueError(f"Invalid mode {mode!r}; expected 'formal' or 'concise'.")
+
     if isinstance(text, list):
         return [
             _normalize_single(
@@ -220,6 +229,7 @@ def normalize(
                 lowercase=lowercase,
                 normalize_punctuation=normalize_punctuation,
                 normalize_whitespace=normalize_whitespace,
+                mode=mode,
             )
             if isinstance(t, str) and t
             else t
@@ -237,4 +247,5 @@ def normalize(
         lowercase=lowercase,
         normalize_punctuation=normalize_punctuation,
         normalize_whitespace=normalize_whitespace,
+        mode=mode,
     )
