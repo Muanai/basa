@@ -23,7 +23,20 @@ Core features:
 
 ---
 
-## v0.2 — Translation Utilities
+## v0.2 — Indexed Typo Engine, Lexicon Expansion & Concise Mode
+
+Status: Current Release
+
+Core features:
+
+* SymSpell-style `_DeleteIndex` and bounded Levenshtein distance for 50k+ vocabulary lookup
+* Built-in standard Indonesian vocabulary via `typo.load_default_vocab()`
+* `mode="formal" | "concise"` parameter on `normalize()` and `quick()`
+* Expanded Indonesian slang and abbreviation coverage with canonical target alignment
+
+---
+
+## v0.3 — Translation & Evaluation Utilities
 
 Planned features:
 

@@ -18,9 +18,12 @@ from basa import typo
 
 ## Loading a Vocabulary
 
-Before using typo correction, add words to the vocabulary.
+Before using typo correction, either load the built-in Indonesian core vocabulary or add domain-specific words:
 
 ```python
+typo.load_default_vocab()
+
+# Or add custom domain words:
 typo.add_to_vocab({
     "makan",
     "minum",

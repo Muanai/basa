@@ -46,11 +46,14 @@ To avoid destructive behavior, BASA requires explicit user consent before applyi
 
 ## Loading a Vocabulary
 
-Before enabling typo correction, add words to the vocabulary.
+Before enabling typo correction, load the built-in Indonesian core vocabulary or add your own domain words:
 
 ```python
 from basa import typo
 
+typo.load_default_vocab()
+
+# Or supply domain-specific terms:
 typo.add_to_vocab({
     "makan",
     "minum",

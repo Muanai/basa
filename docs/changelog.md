@@ -10,6 +10,24 @@ The project follows Semantic Versioning (SemVer).
 
 ---
 
+## [0.2.0] - 2026-11-20
+
+Feature release adding a SymSpell-style typo index, built-in Indonesian core vocabulary, `concise` normalization mode, and expanded slang/abbreviation coverage.
+
+### Added
+
+* SymSpell-style `_DeleteIndex` and bounded Levenshtein distance for sub-linear typo lookup at 50k+ vocabulary scale, with deterministic `(distance, candidate)` tie-breaking.
+* Built-in core Indonesian vocabulary (`DEFAULT_VOCAB`) accessible via `typo.load_default_vocab()`.
+* Token guards in `typo.correct_text()` to skip URLs, domains, emails, handles, hashtags, and digits while preserving edge punctuation.
+* `mode="formal" | "concise"` option on `normalize()`, `quick()`, and `SlangNormalizer.normalize()` for token-efficient normalization.
+* Expanded standard abbreviations (`kpd`, `smg`, `bgmn`, `shg`, `msh`, `sdg`, `kl`, `jkt`, `sbg`, `skali`) and youth/internet slang (`gaje`, `alay`, `kicep`, `curcol`, `modus`, `pewe`, `cogan`, `cecan`, `sabi`, `kuy`, `pargoy`, `komuk`, `gamon`, `sotoy`, `keles`).
+
+### Changed
+
+* Aligned canonical formal targets for `mager` (`malas gerak`), `kepo` (`penasaran`), `gokil` (`gila`), `gabut` (`gaji buta`), and `lg` (`lagi`).
+
+---
+
 ## [0.1.1] - 2026-11-14
 
 Patch release focusing on over-normalization (`ONER`) safety, dictionary integrity, and runtime hygiene.

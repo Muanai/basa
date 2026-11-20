@@ -92,25 +92,27 @@ Normalize informal Indonesian text. Accepts a single string or a list of strings
 
 ```python
 normalize(
-    text: Union[str, List[str]],
+    text: str | list[str],
     apply_slang: bool = True,
     apply_typo: bool = False,
     lowercase: bool = True,
     normalize_punctuation: bool = True,
     normalize_whitespace: bool = True,
-) -> Union[str, List[str]]
+    mode: Literal["formal", "concise"] = "formal",
+) -> str | list[str]
 ```
 
 #### Parameters
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `text` | `str` or `List[str]` | — | Input text or list of texts. |
+| `text` | `str` or `list[str]` | — | Input text or list of texts. |
 | `apply_slang` | `bool` | `True` | Expand slang and reduce expressive repeated characters (e.g. `"bngtttt"` → `"banget"`). |
 | `apply_typo` | `bool` | `False` | Correct misspelled words using Levenshtein distance. **Opt-in** — requires a vocabulary to be loaded first. |
 | `lowercase` | `bool` | `True` | Lowercase the text before processing. Set `False` for NER and case-sensitive pipelines. |
 | `normalize_punctuation` | `bool` | `True` | Collapse repeated punctuation marks (`"!!!!!"` → `"!"`). |
 | `normalize_whitespace` | `bool` | `True` | Strip leading/trailing whitespace and collapse internal multiple spaces. |
+| `mode` | `"formal"` or `"concise"` | `"formal"` | Normalization style: `"formal"` uses full standard expansions; `"concise"` prefers shorter token-efficient replacements. |
 
 #### Processing pipeline (in order)
 
@@ -397,8 +399,8 @@ pip install -e ".[dev]"         # pytest, ruff, black, mypy
 
 | Version | Status | Features |
 |---|---|---|
-| **v0.1** | ✅ Current | `normalize()`, `quick()`, slang (1,300+ entries, 27 categories), typo corrector |
-| **v0.2** | 🔜 Planned | BK-Tree / SymSpell for faster typo correction at large vocab sizes |
+| **v0.1** | ✅ Released | `normalize()`, `quick()`, slang (1,300+ entries, 27 categories), typo corrector |
+| **v0.2** | ✅ Current | SymSpell-style delete index, `load_default_vocab()`, `mode="concise"`, expanded lexicon |
 | **v0.3** | 🔜 Planned | Emoji handling, `remove_emoji` flag |
 | **v0.4** | 🔜 Planned | Tokenizer module (`basa.tokenize`) |
 | **v1.0** | 🔜 Planned | Stable API, full docs site, PyPI release |
