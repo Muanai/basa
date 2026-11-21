@@ -389,6 +389,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#v02" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v0.2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#future-releases" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1010,6 +1021,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#v02" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        v0.2
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#future-releases" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1073,11 +1095,12 @@
 </code></pre></div>
 <h2 id="features">Features</h2>
 <ul>
-<li>Indonesian slang normalization</li>
+<li>Indonesian slang normalization (<code>formal</code> and <code>concise</code> modes)</li>
 <li>Repeated-character reduction (<code>gkkkk → gk</code>)</li>
-<li>Conservative typo correction (opt-in)</li>
+<li>Entity preservation for URLs, domains, emails, handles, and hashtags</li>
+<li>Indexed conservative typo correction (opt-in, with built-in <code>typo.load_default_vocab()</code>)</li>
 <li>Batch processing support</li>
-<li>Pure Python implementation</li>
+<li>Pure Python implementation (zero core dependencies)</li>
 <li>Developer-friendly API</li>
 </ul>
 <h2 id="installation">Installation</h2>
@@ -1108,6 +1131,13 @@
 <li>Slang normalization</li>
 <li>Typo correction</li>
 <li>Batch processing</li>
+</ul>
+<h3 id="v02">v0.2</h3>
+<ul>
+<li>SymSpell-style delete index (<code>p50 ~ 1 ms</code> at 50k vocabulary)</li>
+<li>Built-in core vocabulary via <code>typo.load_default_vocab()</code></li>
+<li><code>mode="formal" | "concise"</code> parameter on <code>normalize()</code> and <code>quick()</code></li>
+<li>URL/domain/handle shielding and expanded slang/abbreviation coverage</li>
 </ul>
 <h3 id="future-releases">Future Releases</h3>
 <ul>

@@ -17,11 +17,12 @@ quick("GW GKKKK NGERTIII BNGTTTT!!!!!")
 
 ## Features
 
-* Indonesian slang normalization
+* Indonesian slang normalization (`formal` and `concise` modes)
 * Repeated-character reduction (`gkkkk → gk`)
-* Conservative typo correction (opt-in)
+* Entity preservation for URLs, domains, emails, handles, and hashtags
+* Indexed conservative typo correction (opt-in, with built-in `typo.load_default_vocab()`)
 * Batch processing support
-* Pure Python implementation
+* Pure Python implementation (zero core dependencies)
 * Developer-friendly API
 
 ## Installation
@@ -60,6 +61,13 @@ BASA follows several core principles:
 * Slang normalization
 * Typo correction
 * Batch processing
+
+### v0.2
+
+* SymSpell-style delete index (`p50 ~ 1 ms` at 50k vocabulary)
+* Built-in core vocabulary via `typo.load_default_vocab()`
+* `mode="formal" | "concise"` parameter on `normalize()` and `quick()`
+* URL/domain/handle shielding and expanded slang/abbreviation coverage
 
 ### Future Releases
 
@@ -738,6 +746,7 @@ normalize(
     apply_typo=False,
     lowercase=True,
     normalize_punctuation=True,
+    mode="formal",
 )
 ```
 
@@ -792,15 +801,34 @@ Output:
 
 ---
 
+## Concise vs. Formal Mode
+
+By default (`mode="formal"`), BASA expands slang into full standard Indonesian. Pass `mode="concise"` when you prefer shorter, single-word equivalents for tight token budgets:
+
+```python
+from basa import normalize
+
+normalize("gw mager bgt gercep", mode="formal")
+# 'saya malas gerak banget gerak cepat'
+
+normalize("gw mager bgt gercep", mode="concise")
+# 'saya malas sekali cepat'
+```
+
+---
+
 ## Typo Correction
 
 Typo correction is disabled by default.
 
-Load your vocabulary first:
+Load the built-in Indonesian core vocabulary (or add your own domain words) first:
 
 ```python
 from basa import normalize, typo
 
+typo.load_default_vocab()
+
+# Or add custom domain words:
 typo.add_to_vocab({
     "makan",
     "minum"
@@ -1012,6 +1040,7 @@ normalize(
     lowercase=True,
     normalize_punctuation=True,
     normalize_whitespace=True,
+    mode="formal",
 )
 ```
 
@@ -1071,11 +1100,14 @@ False
 
 Enables Levenshtein-based typo correction.
 
-A vocabulary must be loaded beforehand:
+A vocabulary must be loaded beforehand via `typo.load_default_vocab()` or `typo.add_to_vocab()`:
 
 ```python
 from basa import typo
 
+typo.load_default_vocab()
+
+# Or supply domain-specific words:
 typo.add_to_vocab({
     "makan",
     "minum"
@@ -1138,6 +1170,36 @@ True
 ```
 
 Collapses multiple spaces and trims leading/trailing whitespace.
+
+---
+
+### `mode`
+
+Type:
+
+```python
+Literal["formal", "concise"]
+```
+
+Default:
+
+```python
+"formal"
+```
+
+Controls slang replacement style:
+
+* `"formal"` — uses standard, readable Indonesian expansions (e.g. `mager` → `malas gerak`, `gercep` → `gerak cepat`).
+* `"concise"` — prefers shorter single-word equivalents where available (e.g. `mager` → `malas`, `bgt` → `sekali`, `gercep` → `cepat`).
+
+Raises `ValueError` if given any other value.
+
+Example:
+
+```python
+normalize("gw mager bgt gercep", mode="concise")
+# 'saya malas sekali cepat'
+```
 
 ---
 
@@ -1213,7 +1275,7 @@ Output:
 ## Function Signature
 
 ```python
-quick(text)
+quick(text, mode="formal")
 ```
 
 ---
@@ -1268,6 +1330,7 @@ normalize(
     lowercase=True,
     normalize_punctuation=True,
     normalize_whitespace=True,
+    mode=mode,
 )
 ```
 
@@ -1387,12 +1450,25 @@ print(len(slang))
 
 ---
 
-## Adding Custom Entries
+## Normalization Modes (`formal` vs `concise`)
 
-Users can extend the dictionary dynamically.
+Pass `mode="concise"` when shorter, token-efficient equivalents are preferred over multi-word expansions:
 
 ```python
-slang.add({
+slang.normalize("gw mager bgt gercep", mode="concise")
+# 'saya malas sekali cepat'
+```
+
+---
+
+## Adding Custom Entries
+
+Users can extend the dictionary dynamically with `add()` or `bulk_add()`.
+
+```python
+slang.add("npwp", "nomor pokok wajib pajak")
+
+slang.bulk_add({
     "wfo": "work from office",
     "wfh": "work from home"
 })

@@ -703,6 +703,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#normalization-modes-formal-vs-concise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Normalization Modes (formal vs concise)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#adding-custom-entries" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -996,6 +1007,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#normalization-modes-formal-vs-concise" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Normalization Modes (formal vs concise)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#adding-custom-entries" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1147,9 +1169,17 @@
 <span class="c1"># 1308</span>
 </code></pre></div>
 <hr />
+<h2 id="normalization-modes-formal-vs-concise">Normalization Modes (<code>formal</code> vs <code>concise</code>)</h2>
+<p>Pass <code>mode="concise"</code> when shorter, token-efficient equivalents are preferred over multi-word expansions:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">slang</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">"gw mager bgt gercep"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"concise"</span><span class="p">)</span>
+<span class="c1"># 'saya malas sekali cepat'</span>
+</code></pre></div>
+<hr />
 <h2 id="adding-custom-entries">Adding Custom Entries</h2>
-<p>Users can extend the dictionary dynamically.</p>
-<div class="language-python highlight"><pre><span></span><code><span class="n">slang</span><span class="o">.</span><span class="n">add</span><span class="p">({</span>
+<p>Users can extend the dictionary dynamically with <code>add()</code> or <code>bulk_add()</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">slang</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">"npwp"</span><span class="p">,</span> <span class="s2">"nomor pokok wajib pajak"</span><span class="p">)</span>
+
+<span class="n">slang</span><span class="o">.</span><span class="n">bulk_add</span><span class="p">({</span>
     <span class="s2">"wfo"</span><span class="p">:</span> <span class="s2">"work from office"</span><span class="p">,</span>
     <span class="s2">"wfh"</span><span class="p">:</span> <span class="s2">"work from home"</span>
 <span class="p">})</span>

@@ -730,6 +730,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mode
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1101,6 +1112,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mode
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1221,6 +1243,7 @@
     <span class="n">lowercase</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">normalize_punctuation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">normalize_whitespace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"formal"</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
 <hr />
@@ -1255,9 +1278,12 @@
 <div class="language-python highlight"><pre><span></span><code><span class="kc">False</span>
 </code></pre></div>
 <p>Enables Levenshtein-based typo correction.</p>
-<p>A vocabulary must be loaded beforehand:</p>
+<p>A vocabulary must be loaded beforehand via <code>typo.load_default_vocab()</code> or <code>typo.add_to_vocab()</code>:</p>
 <div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">basa</span><span class="w"> </span><span class="kn">import</span> <span class="n">typo</span>
 
+<span class="n">typo</span><span class="o">.</span><span class="n">load_default_vocab</span><span class="p">()</span>
+
+<span class="c1"># Or supply domain-specific words:</span>
 <span class="n">typo</span><span class="o">.</span><span class="n">add_to_vocab</span><span class="p">({</span>
     <span class="s2">"makan"</span><span class="p">,</span>
     <span class="s2">"minum"</span>
@@ -1294,6 +1320,24 @@
 <div class="language-python highlight"><pre><span></span><code><span class="kc">True</span>
 </code></pre></div>
 <p>Collapses multiple spaces and trims leading/trailing whitespace.</p>
+<hr />
+<h3 id="mode"><code>mode</code></h3>
+<p>Type:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">Literal</span><span class="p">[</span><span class="s2">"formal"</span><span class="p">,</span> <span class="s2">"concise"</span><span class="p">]</span>
+</code></pre></div>
+<p>Default:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="s2">"formal"</span>
+</code></pre></div>
+<p>Controls slang replacement style:</p>
+<ul>
+<li><code>"formal"</code> — uses standard, readable Indonesian expansions (e.g. <code>mager</code> → <code>malas gerak</code>, <code>gercep</code> → <code>gerak cepat</code>).</li>
+<li><code>"concise"</code> — prefers shorter single-word equivalents where available (e.g. <code>mager</code> → <code>malas</code>, <code>bgt</code> → <code>sekali</code>, <code>gercep</code> → <code>cepat</code>).</li>
+</ul>
+<p>Raises <code>ValueError</code> if given any other value.</p>
+<p>Example:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="n">normalize</span><span class="p">(</span><span class="s2">"gw mager bgt gercep"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"concise"</span><span class="p">)</span>
+<span class="c1"># 'saya malas sekali cepat'</span>
+</code></pre></div>
 <hr />
 <h2 id="batch-processing">Batch Processing</h2>
 <div class="language-python highlight"><pre><span></span><code><span class="n">normalize</span><span class="p">([</span>

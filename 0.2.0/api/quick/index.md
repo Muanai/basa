@@ -35,7 +35,7 @@ Output:
 ## Function Signature
 
 ```python
-quick(text)
+quick(text, mode="formal")
 ```
 
 ---
@@ -90,6 +90,7 @@ normalize(
     lowercase=True,
     normalize_punctuation=True,
     normalize_whitespace=True,
+    mode=mode,
 )
 ```
 

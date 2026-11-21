@@ -422,6 +422,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#concise-vs-formal-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concise vs. Formal Mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#typo-correction" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -972,6 +983,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#concise-vs-formal-mode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concise vs. Formal Mode
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#typo-correction" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1059,6 +1081,7 @@
     <span class="n">apply_typo</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">lowercase</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">normalize_punctuation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">"formal"</span><span class="p">,</span>
 <span class="p">)</span>
 </code></pre></div>
 <p>Output:</p>
@@ -1092,11 +1115,25 @@
 <div class="language-python highlight"><pre><span></span><code><span class="s1">'Jokowi pergi ke Jakarta'</span>
 </code></pre></div>
 <hr />
+<h2 id="concise-vs-formal-mode">Concise vs. Formal Mode</h2>
+<p>By default (<code>mode="formal"</code>), BASA expands slang into full standard Indonesian. Pass <code>mode="concise"</code> when you prefer shorter, single-word equivalents for tight token budgets:</p>
+<div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">basa</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalize</span>
+
+<span class="n">normalize</span><span class="p">(</span><span class="s2">"gw mager bgt gercep"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"formal"</span><span class="p">)</span>
+<span class="c1"># 'saya malas gerak banget gerak cepat'</span>
+
+<span class="n">normalize</span><span class="p">(</span><span class="s2">"gw mager bgt gercep"</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">"concise"</span><span class="p">)</span>
+<span class="c1"># 'saya malas sekali cepat'</span>
+</code></pre></div>
+<hr />
 <h2 id="typo-correction">Typo Correction</h2>
 <p>Typo correction is disabled by default.</p>
-<p>Load your vocabulary first:</p>
+<p>Load the built-in Indonesian core vocabulary (or add your own domain words) first:</p>
 <div class="language-python highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">basa</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalize</span><span class="p">,</span> <span class="n">typo</span>
 
+<span class="n">typo</span><span class="o">.</span><span class="n">load_default_vocab</span><span class="p">()</span>
+
+<span class="c1"># Or add custom domain words:</span>
 <span class="n">typo</span><span class="o">.</span><span class="n">add_to_vocab</span><span class="p">({</span>
     <span class="s2">"makan"</span><span class="p">,</span>
     <span class="s2">"minum"</span>
