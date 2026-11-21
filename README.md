@@ -118,8 +118,8 @@ normalize(
 
 ```
 1. lowercase            → "GW GK NGERTI" → "gw gk ngerti"
-2. slang normalization  → "gkkkk" → "gk" → "tidak"
-3. typo correction      → "mkan" → "makan"  (opt-in)
+2. slang normalization  → shields URLs/handles, "gkkkk" → "gk" → "tidak" (formal / concise)
+3. typo correction      → "mkan" → "makan"  (opt-in via SymSpell delete index)
 4. punctuation          → "!!!!!" → "!"
 5. whitespace cleanup   → "  a   b  " → "a b"
 ```
@@ -135,49 +135,56 @@ normalize("Jokowi pergi ke Jakarta", lowercase=False)
 normalize("gw gk ngerti", apply_slang=False)
 # → 'gw gk ngerti'
 
-# Enable typo correction (requires vocab)
+# Concise mode for tighter token budgets
+normalize("gw mager bgt gercep", mode="concise")
+# → 'saya malas sekali cepat'
+
+# Enable typo correction (load built-in vocab or add custom words)
 from basa import typo
-typo.add_to_vocab({"makan", "minum", "pergi"})
-normalize("saya mkan dan mnum", apply_typo=True)
-# → 'saya makan dan minum'
+typo.load_default_vocab()          # or typo.add_to_vocab({"teknik", "komputer"})
+normalize("tehknik komptuer", apply_typo=True)
+# → 'teknik komputer'
 ```
 
 ---
 
-### `quick(text)`
+### `quick(text, mode="formal")`
 
-Zero-config alias for `normalize()` with all default settings.
+Zero-config alias for `normalize()` with default settings.
 
 ```python
 from basa import quick
 
 quick("gw gamau pergi krn mager")
-# → 'saya tidak mau pergi karena malas bergerak'
+# → 'saya tidak mau pergi karena malas gerak'
+
+quick("gw mager bgt gercep", mode="concise")
+# → 'saya malas sekali cepat'
 ```
 
 ---
 
 ### `typo` — Typo Corrector
 
-BASA's typo corrector is **vocabulary-driven and opt-in by default**. You supply the vocabulary; BASA finds the closest match using Levenshtein distance.
+BASA's typo corrector is **vocabulary-driven and opt-in by default**, backed by a pure-Python SymSpell-style delete index and diagonal-banded bounded Levenshtein search with deterministic tie-breaking. You can load the built-in standard Indonesian + tech vocabulary via `typo.load_default_vocab()` or supply your own domain words via `typo.add_to_vocab()`.
 
 ```python
 from basa import typo
 
-# Load your domain vocabulary
-typo.add_to_vocab({"makan", "minum", "masak", "pergi", "datang"})
+# Load built-in core Indonesian vocabulary, or add domain terms
+typo.load_default_vocab()
+typo.add_to_vocab({"xgboost", "lightgbm"})
 
-typo.correct("mkan")     # → 'makan'
-typo.correct("mnm")      # → 'minum'
+typo.correct("tehknik")  # → 'teknik'
 typo.correct("ok")       # → 'ok'  (too short, skipped by default)
 
-# Correct a full sentence
-typo.correct_text("saya mkan dan mnm")
-# → 'saya makan dan minum'
+# Correct a full sentence (skips URLs, domains, handles, digits, and punctuation)
+typo.correct_text("perangkat komptuer, https://example.com")
+# → 'perangkat komputer, https://example.com'
 
 # Get multiple suggestions
-typo.suggest("mkan", top_k=3)
-# → ['makan', 'masak', 'minum']
+typo.suggest("tehknik", top_k=2)
+# → ['teknik', 'teknis']
 ```
 
 #### Why is `apply_typo=False` by default?
@@ -223,7 +230,7 @@ from basa.core.slang import slang, SlangNormalizer
 
 # Use the singleton
 slang.normalize("gw gamau pergi krn lg baper bgt")
-# → 'saya tidak mau pergi karena sedang bawa perasaan banget'
+# → 'saya tidak mau pergi karena lagi bawa perasaan banget'
 
 # Custom dictionary (extend or override defaults)
 custom = SlangNormalizer(custom_mapping={
@@ -240,37 +247,38 @@ slang.normalize_batch(["gw makan", "lu minum"])
 
 #### Slang dictionary categories
 
-The built-in dictionary covers **1,300+ entries** across 27 categories:
+The built-in dictionary covers **1,236 entries** across 28 categories (with deduplicated keys across all categories and code-switched English technical terms preserved verbatim):
 
 | Category | Count | Examples |
 |---|---|---|
 | Pronouns | 34 | `gw` → saya, `lu` → kamu, `doi` → dia, `ane` → saya, `sampeyan` → kamu |
 | Kinship & address | 19 | `kk` → kakak, `ortu` → orang tua, `bokap` → ayah, `nyokap` → ibu |
-| Negation | 22 | `ga`, `gak`, `nggak`, `kagak`, `jangan`, `belom` → tidak/belum/jangan |
+| Negation | 22 | `ga`, `gak`, `nggak`, `kagak` → tidak |
 | Compound negation | 30 | `gamau` → tidak mau, `gabisa` → tidak bisa, `gatau` → tidak tahu |
-| Conjunctions | 51 | `yg` → yang, `krn` → karena, `stlh` → setelah, `sblm` → sebelum |
-| Verbs | 99 | `udah` → sudah, `ngerti` → mengerti, `nyari` → mencari, `ngobrol` → mengobrol |
-| Adjectives & adverbs | 147 | `bgt` → banget, `lmyn` → lumayan, `pdhl` → padahal, `kyknya` → sepertinya |
-| Question words | 27 | `gmn` → bagaimana, `knp` → kenapa, `kumaha` → bagaimana (Sunda) |
-| Greetings & responses | 73 | `makasih`, `tq`, `sori`, `yoi`, `bye`, `tengkyu` → terima kasih/maaf/dll |
-| Temporal & location | 26 | `skrg` → sekarang, `kmrn` → kemarin, `mgg` → minggu, `wktu` → waktu |
-| Internet slang | 50 | `otw` → dalam perjalanan, `btw` → omong-omong, `lowkey` → diam-diam |
-| E-commerce & finance | 30 | `ongkir` → ongkos kirim, `cod` → bayar di tempat, `duit` → uang |
-| Youth / Gen-Z | 24 | `mager` → malas bergerak, `baper` → bawa perasaan, `gabut` → tidak ada kegiatan |
-| Discourse markers | 11 | `mksdnya` → maksudnya, `pokoknya`, `intinya`, `menurutku` → menurut saya |
+| Conjunctions | 53 | `yg` → yang, `krn` → karena, `stlh` → setelah, `sblm` → sebelum, `kpd` → kepada |
+| Verbs | 100 | `udah` → sudah, `lg` → lagi, `ngerti` → mengerti, `nyari` → mencari, `ngobrol` → mengobrol |
+| Adjectives & adverbs | 149 | `bgt` → banget, `lmyn` → lumayan, `pdhl` → padahal, `kyknya` → sepertinya |
+| Question words | 28 | `gmn` → bagaimana, `bgmn` → bagaimana, `knp` → kenapa, `kumaha` → bagaimana (Sunda) |
+| Greetings & responses | 72 | `makasih`, `tq` → terima kasih, `sori` → maaf, `yoi` → iya |
+| Temporal & location | 27 | `skrg` → sekarang, `kmrn` → kemarin, `mgg` → minggu, `wktu` → waktu, `jkt` → jakarta |
+| Internet slang | 42 | `otw` → dalam perjalanan, `btw` → omong-omong, `fyi` → sebagai informasi, `imo` → menurut saya |
+| E-commerce & finance | 30 | `ongkir` → ongkos kirim, `cod` → bayar di tempat, `rekber` → rekening bersama, `gan` → saudara |
+| Youth / Gen-Z | 32 | `mager` → malas gerak, `baper` → bawa perasaan, `gabut` → gaji buta, `kepo` → penasaran |
+| Discourse markers | 11 | `mksdnya` → maksudnya, `pokonya` → pokoknya, `menurutku` → menurut saya |
 | Javanese extended | 35 | `mangan` → makan, `turu` → tidur, `apik` → bagus, `okeh` → banyak |
-| Sundanese extended | 27 | `abdi` → saya, `geus` → sudah, `tiasa` → bisa, `atuh` → dong |
-| Nouns | 46 | `hp` → handphone, `temen` → teman, `matkul` → mata kuliah, `kantor` → kantor |
-| Health | 44 | `dmm` → demam, `opname` → rawat inap, `gws` → lekas sembuh, `isoman` → isolasi mandiri |
-| Emotions & expressions | 83 | `galau`, `bete`, `ghosting`, `crush`, `pdkt` → pendekatan, `mupeng` |
-| Food & drink | 55 | `nasgor` → nasi goreng, `kopsu` → kopi susu, `laper` → lapar, `kenyang` |
-| Clothing & fashion | 47 | `ootd` → pakaian hari ini, `thrifting` → belanja baju bekas, `hoodie` |
-| Transportation | 36 | `ojol` → ojek online, `krl` → kereta rel listrik, `macet`, `nebeng` → menumpang |
-| Religion & culture | 56 | `alhamdulillah`, `bismillah`, `bukber` → buka bersama, `ultah` → ulang tahun |
-| Education extended | 69 | `bimbel` → bimbingan belajar, `ospek` → orientasi studi, `maba` → mahasiswa baru |
-| Work & office | 85 | `wfh` → kerja dari rumah, `deadline` → batas waktu, `lembur`, `resign` |
-| Numbers & quantity | 35 | `1rb` → seribu, `5jt` → lima juta, `rata2` → rata-rata, `tiba2` → tiba-tiba |
+| Sundanese extended | 26 | `abdi` → saya, `geus` → sudah, `tiasa` → bisa, `atuh` → dong |
+| Nouns | 45 | `hp` → handphone, `temen` → teman, `matkul` → mata kuliah, `tmn2` → teman-teman |
+| Health | 38 | `dmm` → demam, `opname` → rawat inap, `gws` → lekas sembuh, `isoman` → isolasi mandiri |
+| Emotions & expressions | 62 | `semngt` → semangat, `kzl`, `bete` → kesal, `gokil` → gila |
+| Food & drink | 48 | `nasgor` → nasi goreng, `kopsu` → kopi susu, `laper` → lapar, `mkanan` → makanan |
+| Clothing & fashion | 25 | `bj` → baju, `kaos` → kaus, `kmja` → kemeja |
+| Transportation | 33 | `ojol` → ojek online, `krl` → kereta rel listrik, `angkot` → angkutan kota |
+| Religion & culture | 55 | `insyaallah` → insya allah, `alhdlh` → alhamdulillah, `bukber` → buka bersama, `ultah` → ulang tahun |
+| Education extended | 54 | `bimbel` → bimbingan belajar, `ospek` → orientasi studi, `maba` → mahasiswa baru |
+| Work & office | 40 | `wfh` → kerja dari rumah, `krja` → kerja, `krjaan` → pekerjaan |
+| Numbers & quantity | 34 | `sejuta` → satu juta, `1rb` → seribu, `5jt` → lima juta, `rata2` → rata-rata |
 | Compound expressions | 57 | `ngapain` → sedang apa, `kapan2` → kapan-kapan, `otw ke` → dalam perjalanan ke |
+| Particles | 35 | `lah`, `sih`, `deh` (particle variants) |
 
 #### Extending the dictionary
 
@@ -298,7 +306,7 @@ custom = SlangNormalizer(custom_mapping={
     "cuk":    "ekspresi",
 })
 custom.normalize("jancok, mantul tenan!")
-# → 'ekspresi, mantap betul sungguh!'
+# → 'ekspresi, mantap betul tenan!'
 
 # Export the full mapping for inspection or persistence
 mapping = slang.export()   # → Dict[str, str]
@@ -347,9 +355,9 @@ preprocess("gw mkan siang tdi di wrng padang")
 ```python
 from basa import normalize
 
-text = "Jokowi blg bhw pemerintah akan bantu UMKM"
+text = "Jokowi blg pemerintah siap utk bantu UMKM"
 normalize(text, lowercase=False)
-# → 'Jokowi bilang bahwa pemerintah akan bantu UMKM'
+# → 'Jokowi bilang pemerintah siap untuk bantu UMKM'
 ```
 
 ---
@@ -358,11 +366,11 @@ normalize(text, lowercase=False)
 
 BASA is built around three principles:
 
-1. **Conservative by default.** Only safe, lossless transforms are enabled out of the box. Destructive features (like typo correction) require explicit opt-in.
+1. **Conservative by default.** Only safe, lossless transforms are enabled out of the box (`ONER = 0%` across standard KBBI text, URLs, and code-switched technical terms). Destructive features like typo correction remain opt-in.
 
-2. **No bundled vocabularies for correction.** Every domain has different vocabulary needs — fintech, e-commerce, ML, healthcare. Callers supply their own word list via `typo.add_to_vocab()`.
+2. **Opt-in vocabularies for typo correction.** General workflows can load the curated standard Indonesian core word list via `typo.load_default_vocab()`, while specialized domains (fintech, e-commerce, healthcare) can supply custom word lists via `typo.add_to_vocab()`.
 
-3. **Zero required dependencies for core preprocessing.** The `normalize()` and `slang` modules use only the Python standard library. The optional `transformers`, `torch`, and `pydantic` dependencies are only required for advanced modules (`basa.translate`, `basa.evaluate`).
+3. **Zero required dependencies for core preprocessing.** The `normalize()`, `quick()`, `slang`, and `typo` modules use only the Python standard library (`dependencies = []`). Optional extras (`[serving]`, `[evaluation]`, `[docs]`, `[dev]`) are isolated in `pyproject.toml`.
 
 ---
 
@@ -373,21 +381,29 @@ BASA is built around three principles:
 ```bash
 git clone https://github.com/Muanai/basa.git
 cd basa
-python -m venv .venv
-.venv\Scripts\activate       # Windows
-# source .venv/bin/activate  # macOS / Linux
-pip install -e ".[dev]"
+uv sync --extra dev
 ```
 
-### Running tests
+### Running checks
 
 ```bash
-pytest tests/ -v
+uv run ruff check .
+uv run ruff format --check .
+uv run mypy --strict src/basa
+uv run pytest -m "not slow"
+uv run pytest -m slow
+```
+
+### Evaluation suite (`basa-evals`)
+
+```bash
+uv run --with "basa-evals>=0.1.1" basa-eval run --suite pilot_210 --system basa-full
 ```
 
 ### Optional extras
 
 ```bash
+pip install -e ".[docs]"        # MkDocs Material, mkdocs-ask-ai, mike
 pip install -e ".[serving]"     # FastAPI serving
 pip install -e ".[evaluation]"  # ROUGE, BERTScore, seqeval
 pip install -e ".[dev]"         # pytest, ruff, black, mypy
@@ -399,23 +415,21 @@ pip install -e ".[dev]"         # pytest, ruff, black, mypy
 
 | Version | Status | Features |
 |---|---|---|
-| **v0.1** | ✅ Released | `normalize()`, `quick()`, slang (1,300+ entries, 27 categories), typo corrector |
-| **v0.2** | ✅ Current | SymSpell-style delete index, `load_default_vocab()`, `mode="concise"`, expanded lexicon |
+| **v0.1** | ✅ Released | `normalize()`, `quick()`, PyPI & MkDocs site, `ONER = 0` entity guardrails |
+| **v0.2** | ✅ Current | SymSpell delete index, `load_default_vocab()`, `mode="concise"`, expanded lexicon, CI release gate |
 | **v0.3** | 🔜 Planned | Emoji handling, `remove_emoji` flag |
 | **v0.4** | 🔜 Planned | Tokenizer module (`basa.tokenize`) |
-| **v1.0** | 🔜 Planned | Stable API, full docs site, PyPI release |
+| **v1.0** | 🔜 Planned | Stable API freeze and LLM/RAG framework integrations |
 
 ---
 
-## Contributing
+## Contributing & Community
 
-Contributions are welcome! In particular:
+Contributions are welcome! See our [Contributing Guide](CONTRIBUTING.md), [Code of Conduct](CODE_OF_CONDUCT.md), and [Security Policy](SECURITY.md):
 
-- **Slang dictionary additions** — if you spot a common slang word that's missing, open a PR adding it to the appropriate category in [`src/basa/core/slang.py`](src/basa/core/slang.py).
-- **Bug reports** — please include the exact input string and the unexpected output.
-- **Performance improvements** — especially for the typo correction module.
-
-Please open an issue before submitting large changes.
+- **Slang & abbreviation additions** — add verified entries to the appropriate category in [`src/basa/core/slang.py`](src/basa/core/slang.py) and run `pytest` + `basa-evals`.
+- **Bug reports** — open an issue with the exact input string, expected output, and actual output.
+- **Performance & indexing** — improvements to core normalization and SymSpell lookup latency.
 
 ---
 
