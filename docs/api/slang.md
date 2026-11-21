@@ -84,12 +84,25 @@ print(len(slang))
 
 ---
 
-## Adding Custom Entries
+## Normalization Modes (`formal` vs `concise`)
 
-Users can extend the dictionary dynamically.
+Pass `mode="concise"` when shorter, token-efficient equivalents are preferred over multi-word expansions:
 
 ```python
-slang.add({
+slang.normalize("gw mager bgt gercep", mode="concise")
+# 'saya malas sekali cepat'
+```
+
+---
+
+## Adding Custom Entries
+
+Users can extend the dictionary dynamically with `add()` or `bulk_add()`.
+
+```python
+slang.add("npwp", "nomor pokok wajib pajak")
+
+slang.bulk_add({
     "wfo": "work from office",
     "wfh": "work from home"
 })

@@ -38,6 +38,7 @@ normalize(
     apply_typo=False,
     lowercase=True,
     normalize_punctuation=True,
+    mode="formal",
 )
 ```
 
@@ -92,15 +93,34 @@ Output:
 
 ---
 
+## Concise vs. Formal Mode
+
+By default (`mode="formal"`), BASA expands slang into full standard Indonesian. Pass `mode="concise"` when you prefer shorter, single-word equivalents for tight token budgets:
+
+```python
+from basa import normalize
+
+normalize("gw mager bgt gercep", mode="formal")
+# 'saya malas gerak banget gerak cepat'
+
+normalize("gw mager bgt gercep", mode="concise")
+# 'saya malas sekali cepat'
+```
+
+---
+
 ## Typo Correction
 
 Typo correction is disabled by default.
 
-Load your vocabulary first:
+Load the built-in Indonesian core vocabulary (or add your own domain words) first:
 
 ```python
 from basa import normalize, typo
 
+typo.load_default_vocab()
+
+# Or add custom domain words:
 typo.add_to_vocab({
     "makan",
     "minum"

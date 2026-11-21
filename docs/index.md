@@ -11,11 +11,12 @@ quick("GW GKKKK NGERTIII BNGTTTT!!!!!")
 
 ## Features
 
-* Indonesian slang normalization
+* Indonesian slang normalization (`formal` and `concise` modes)
 * Repeated-character reduction (`gkkkk → gk`)
-* Conservative typo correction (opt-in)
+* Entity preservation for URLs, domains, emails, handles, and hashtags
+* Indexed conservative typo correction (opt-in, with built-in `typo.load_default_vocab()`)
 * Batch processing support
-* Pure Python implementation
+* Pure Python implementation (zero core dependencies)
 * Developer-friendly API
 
 ## Installation
@@ -54,6 +55,13 @@ BASA follows several core principles:
 * Slang normalization
 * Typo correction
 * Batch processing
+
+### v0.2
+
+* SymSpell-style delete index (`p50 ~ 1 ms` at 50k vocabulary)
+* Built-in core vocabulary via `typo.load_default_vocab()`
+* `mode="formal" | "concise"` parameter on `normalize()` and `quick()`
+* URL/domain/handle shielding and expanded slang/abbreviation coverage
 
 ### Future Releases
 

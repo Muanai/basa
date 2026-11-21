@@ -40,6 +40,7 @@ normalize(
     lowercase=True,
     normalize_punctuation=True,
     normalize_whitespace=True,
+    mode="formal",
 )
 ```
 
@@ -99,11 +100,14 @@ False
 
 Enables Levenshtein-based typo correction.
 
-A vocabulary must be loaded beforehand:
+A vocabulary must be loaded beforehand via `typo.load_default_vocab()` or `typo.add_to_vocab()`:
 
 ```python
 from basa import typo
 
+typo.load_default_vocab()
+
+# Or supply domain-specific words:
 typo.add_to_vocab({
     "makan",
     "minum"
@@ -166,6 +170,36 @@ True
 ```
 
 Collapses multiple spaces and trims leading/trailing whitespace.
+
+---
+
+### `mode`
+
+Type:
+
+```python
+Literal["formal", "concise"]
+```
+
+Default:
+
+```python
+"formal"
+```
+
+Controls slang replacement style:
+
+* `"formal"` — uses standard, readable Indonesian expansions (e.g. `mager` → `malas gerak`, `gercep` → `gerak cepat`).
+* `"concise"` — prefers shorter single-word equivalents where available (e.g. `mager` → `malas`, `bgt` → `sekali`, `gercep` → `cepat`).
+
+Raises `ValueError` if given any other value.
+
+Example:
+
+```python
+normalize("gw mager bgt gercep", mode="concise")
+# 'saya malas sekali cepat'
+```
 
 ---
 
