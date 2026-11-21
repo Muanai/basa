@@ -1,13 +1,24 @@
-# BASA
+<div align="center">
+  <img src="docs/assets/basa.png" alt="BASA logo" width="96" />
 
-[![PyPI version](https://img.shields.io/pypi/v/basa.svg)](https://pypi.org/project/basa/) 
-[![Python](https://img.shields.io/pypi/pyversions/basa)](https://pypi.org/project/basa/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) 
-[![CI](https://github.com/Muanai/basa/actions/workflows/ci.yml/badge.svg)](https://github.com/Muanai/basa/actions/workflows/ci.yml) 
-[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://muanai.github.io/basa/) 
-[![Downloads](https://static.pepy.tech/badge/basa)](https://pepy.tech/projects/basa)
+  <h1>BASA</h1>
 
-**Modern NLP preprocessing for Indonesian and regional languages.**
+  <p><em>Modern NLP preprocessing for Indonesian and regional languages.</em></p>
+
+  <p>
+    <a href="https://pypi.org/project/basa/"><img src="https://img.shields.io/pypi/v/basa.svg?color=160CA5" alt="PyPI version" /></a>
+    <a href="https://pypi.org/project/basa/"><img src="https://img.shields.io/pypi/pyversions/basa?color=160CA5" alt="Python" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-160CA5.svg" alt="License: MIT" /></a>
+    <a href="https://muanai.github.io/basa/"><img src="https://img.shields.io/badge/docs-mkdocs-160CA5.svg" alt="Documentation" /></a>
+    <a href="https://pepy.tech/projects/basa"><img src="https://img.shields.io/pepy/dt/basa?label=downloads&color=160CA5" alt="Downloads" /></a>
+  </p>
+
+  <p>
+    <strong>English</strong> &nbsp;|&nbsp; <a href="README.id.md">Bahasa Indonesia</a>
+  </p>
+</div>
+
+---
 
 BASA is a lightweight, zero-dependency preprocessing library designed for real-world Indonesian text — the kind found on Twitter/X, TikTok, WhatsApp, Shopee reviews, and Discord. It normalizes informal slang, collapses expressive character repetition, reduces punctuation noise, and optionally corrects typos, all through a single clean API.
 
